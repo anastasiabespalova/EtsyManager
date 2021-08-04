@@ -36,6 +36,6 @@
     </entity>
     <elements>
         <element name="Listing" positionX="-118.1875610351562" positionY="-1069.090118408204" width="128" height="313"/>
-        <element name="Shop" positionX="-542.7282104492188" positionY="-1000.750885009766" width="128" height="223"/>
+        <element name="Shop" positionX="-535.3110961914062" positionY="-978.8457946777348" width="128" height="223"/>
     </elements>
 </model>

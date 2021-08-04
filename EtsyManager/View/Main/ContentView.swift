@@ -9,10 +9,12 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    
+    @Environment(\.managedObjectContext) var context
+    
     var body: some View {
         MainTabView()
-        
-        
+            .environment(\.managedObjectContext, context)
     }
     
 

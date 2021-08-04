@@ -34,20 +34,41 @@ class EtsyAPI {
         }
     }
     
-    func getShopInfo(for shopId: Int) {
+    func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)"
-        AF.request(requestString + apiKey).validate().responseJSON {response in
+        AF.request(requestString + apiKey).validate().responseJSON { response in
             switch response.result {
             case .success:
                 let json = JSON(response.data!)
-                if json["count"].int != nil, json["count"].int! == 1 {
-                    // TODO: actually write down parsing
-                    print("success! shopName: \(json["results"][0]["shop_id"])")
-                }
+                completionHandler({
+                    var shopInfo = ShopInfo()
+                    if json["count"].int != nil, json["count"].int! == 1 {
+                        //shopInfo.shop_id = json["results"][0]["id"].intValue
+                        shopInfo.shop_id = shopId
+                        shopInfo.creation_tsz = json["results"][0]["creation_tsz"].floatValue
+                        shopInfo.digital_listing_count = json["results"][0]["digital_listing_count"].intValue
+                        shopInfo.digital_sale_message = json["results"][0]["digital_sale_message"].stringValue
+                        shopInfo.icon_url_fullxfull = json["results"][0]["icon_url_fullxfull"].stringValue
+                        shopInfo.last_modified_tsz = json["results"][0]["last_modified_tsz"].floatValue
+                        shopInfo.listing_active_count = json["results"][0]["listing_active_count"].intValue
+                       // shopInfo.listing_inactive_count = json["results"][0]["listing_inactive_count"].intValue
+                        shopInfo.listing_inactive_count = 0
+                       // shopInfo.listing_sold_count = json["results"][0]["listing_sold_count"].intValue
+                        shopInfo.listing_sold_count = 0
+                        shopInfo.sale_message = json["results"][0]["sale_message"].stringValue
+                        shopInfo.shop_name = json["results"][0]["shop_name"].stringValue
+                        print("success! shopName: \(shopInfo.shop_name)")
+                    }
+                    return shopInfo
+                    
+                })
             case .failure(let error):
                 print(error.localizedDescription)
+                completionHandler({ throw error })
             }
         }
+        print("success3!")
+        
     }
     
     func getListingInfo(for listingId: Int) {

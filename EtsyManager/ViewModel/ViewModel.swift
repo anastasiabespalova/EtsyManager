@@ -14,7 +14,6 @@ class ShopManager: ObservableObject {
         shops.append(ShopExample())
         shops.append(ShopExample())
     }
-    
     @Published var shops: Array<ShopExample> = []
 }
 

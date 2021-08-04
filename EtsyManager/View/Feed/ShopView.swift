@@ -10,7 +10,9 @@ import SwiftUI
 
 struct ShopView: View {
   //  @ObservedObject var shop: Shop
-  let shop: ShopExample
+    
+  //let shop: ShopExample
+    let shop: Shop
 
   var body: some View {
     HStack(alignment: .top, spacing: 0) {
@@ -18,17 +20,20 @@ struct ShopView: View {
         ShopIcon(width: 40, height: 40, radius: 6)
         Spacer()
         VStack(alignment: .leading, spacing: 6) {
-            Text(shop.name)
+            //Text(shop.name)
+            Text(shop.shop_name ?? "Default")
                 .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(Color(UIColor.label))
             AdaptingStack {
-                Text(shop.released + "  ")
-                Text(shop.domain + "  ")
-                Text(String(shop.difficulty).capitalized)
+                Text("Active listings: " + String(shop.listing_active_count) + "  ")
+               // Text(shop.released + "  ")
+               // Text(shop.domain + "  ")
+               // Text(String(shop.difficulty).capitalized)
             }
-            Text(shop.description)
-                .lineLimit(2)
+            Text("Sales: " + String(shop.listing_sold_count) + "  ")
+            //Text(shop.description)
+               // .lineLimit(2)
         }
             .padding(.horizontal)
             .font(.footnote)

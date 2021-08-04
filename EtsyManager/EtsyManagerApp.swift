@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 @main
 struct EtsyManager: App {
     
@@ -19,24 +19,25 @@ struct EtsyManager: App {
 }
 
 
-/*
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
-
+*/
 
 @main
 struct EtsyManagerApp: App {
-    let persistenceController = PersistenceController.shared
-
+    //let persistenceController = PersistenceController.shared
+    
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+               // .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
 
-*/
+

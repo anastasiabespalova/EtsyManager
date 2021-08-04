@@ -22,8 +22,8 @@ struct AnalyticsView: View {
             withAnimation {
                 let etsy = EtsyAPI()
                 //etsy.getShopInfo(for: 27991754)
-                getNumberOfSales(for: "ArtFromValentina")
-                
+                getNumberOfSales(for: "MarinAmosovaPainting")
+                getShopId(for: "MarinAmosovaPainting")
             }
         }
     }

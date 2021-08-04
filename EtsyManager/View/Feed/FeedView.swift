@@ -9,22 +9,27 @@ import SwiftUI
 
 struct FeedView: View {
     
+    //@Environment(\.managedObjectContext) var context
+    
     @State private var showFilters = false
+    @State private var addNewShop = false
     
     private let shopManager = ShopManager()
-
+    
+    @StateObject private var shopList = ShopPreviewViewModel()
+    
     var body: some View {
         
         NavigationView {
             List {
                 //HeaderView(count: shopManager.shops.count)
-                ForEach(shopManager.shops, id: \.name) { shop in
+                //ForEach(shopManager.shops, id: \.name) { shop in
+                ForEach(shopList.shops, id: \.shop_id) { shop in
                 ZStack {
-                    NavigationLink(destination: ShopFeedPage()) {
+                    NavigationLink( destination: ShopFeedPage() ) {
                         EmptyView()
                     }
                     .opacity(0)
-                    //.buttonStyle(PlainButtonStyle())
                     ShopView(shop: shop)
                 }
                 .frame(
@@ -33,29 +38,39 @@ struct FeedView: View {
                   alignment: .leading)
                 .listRowInsets(EdgeInsets())
                 .padding(.top, 8)
-                //.padding([.leading, .trailing], 20)
                 .background(Color.white)
             }
           }
-            .navigationTitle("Shops")
+            .navigationTitle("Shops Feed")
             .toolbar {
-            ToolbarItem {
+            ToolbarItem(placement: .navigationBarTrailing) {
               // swiftlint:disable:next multiple_closures_with_trailing_closure
-              Button(action: { showFilters = true }) {
-                Image(systemName: "line.horizontal.3.decrease.circle")
-                  .accessibilityLabel(Text("Shows filter options"))
-              }
+                Button(action: { addNewShop = true }) {
+                  Image(systemName: "plus")
+                    .accessibilityLabel(Text("Shows filter options"))
+                }
             }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { showFilters = true }) {
+                  Image(systemName: "line.horizontal.3.decrease.circle")
+                    .accessibilityLabel(Text("Shows filter options"))
+                }
+                   }
           }
           .sheet(isPresented: $showFilters) {
             FilterOptionsView()
           }
+            .sheet(isPresented: $addNewShop) {
+              AddNewShopView()
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear { shopList.getAllShops() }
      
     }
     
     init() {
+        
         // 1. White title on black background
         let appearance = UINavigationBarAppearance()
        // appearance.backgroundColor = UIColor(named: "top-bkgd")
