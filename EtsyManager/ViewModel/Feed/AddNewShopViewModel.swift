@@ -10,10 +10,14 @@ import Foundation
 class AddNewShopViewModel: ObservableObject {
     
     var shopId: String = ""
-    @Published var shopStruct = ShopInfo()
+    var isDigit = true
+    //@Published var shopStruct = ShopInfo()
     
     func addNewShop() {
-        //ShopDataManager.shared.loadShopWithId(27991754)
-        ShopDataManager.shared.loadShopWithId(27991754)
+        if let shopIdInt = Int(shopId) {
+           
+                ShopDataManager.shared.loadShopWithId(shopIdInt)
+            
+        }
     }
 }

@@ -9,28 +9,25 @@ import SwiftUI
 
 struct FeedView: View {
     
-    //@Environment(\.managedObjectContext) var context
-    
+
     @State private var showFilters = false
     @State private var addNewShop = false
-    
-    private let shopManager = ShopManager()
-    
-    @StateObject private var shopList = ShopPreviewViewModel()
+    @State private var shouldUpdate = false
+    @ObservedObject private var shopList = ShopPreviewViewModel()
+
     
     var body: some View {
         
         NavigationView {
             List {
-                //HeaderView(count: shopManager.shops.count)
-                //ForEach(shopManager.shops, id: \.name) { shop in
-                ForEach(shopList.shops, id: \.shop_id) { shop in
+                ForEach(shopList.shopsInfo.indices, id: \.self) { idx in
                 ZStack {
-                    NavigationLink( destination: ShopFeedPage() ) {
+                    //NavigationLink( destination: ShopFeedPage(shopInfo: $shopList.shopsInfo[idx])) {
+                    NavigationLink( destination: ShopFeedPage(shopInfo: $shopList.shopsInfo[idx])) {
                         EmptyView()
                     }
                     .opacity(0)
-                    ShopView(shop: shop)
+                    ShopView(shopInfo: $shopList.shopsInfo[idx])
                 }
                 .frame(
                   maxWidth: .infinity,
@@ -41,16 +38,15 @@ struct FeedView: View {
                 .background(Color.white)
             }
           }
-            .navigationTitle("Shops Feed")
+            .navigationBarTitle("Shops Feed", displayMode: .inline)
             .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-              // swiftlint:disable:next multiple_closures_with_trailing_closure
+            ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { addNewShop = true }) {
                   Image(systemName: "plus")
                     .accessibilityLabel(Text("Shows filter options"))
                 }
             }
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showFilters = true }) {
                   Image(systemName: "line.horizontal.3.decrease.circle")
                     .accessibilityLabel(Text("Shows filter options"))
@@ -60,16 +56,27 @@ struct FeedView: View {
           .sheet(isPresented: $showFilters) {
             FilterOptionsView()
           }
-            .sheet(isPresented: $addNewShop) {
-              AddNewShopView()
-            }
+        .sheet(isPresented: $addNewShop) {
+              AddNewShopView(isPresented: self.$addNewShop)
+                .onDisappear() {
+                    shopList.updateShopsAfterNew()
+                    
+                }
+        }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear { shopList.getAllShops() }
+        .onAppear {
+            if shouldUpdate {
+                shouldUpdate = false
+                shopList.updateAllShops()
+                shopList.updateAllShopsSoldListingsCount()
+            } 
+        }
      
     }
     
     init() {
+        shopList.updateAllShops()
         
         // 1. White title on black background
         let appearance = UINavigationBarAppearance()
@@ -98,5 +105,14 @@ struct FeedView: View {
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
         FeedView()
+    }
+}
+
+extension Binding where Value == Bool {
+    var not: Binding<Value> {
+        Binding<Value>(
+            get: { !self.wrappedValue },
+            set: { self.wrappedValue = !$0 }
+        )
     }
 }

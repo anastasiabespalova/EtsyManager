@@ -10,9 +10,9 @@ import SwiftUI
 
 struct ShopView: View {
   //  @ObservedObject var shop: Shop
-    
   //let shop: ShopExample
-    let shop: Shop
+   // @ObservedObject var shop: Shop
+    @Binding var shopInfo: ShopInfo
 
   var body: some View {
     HStack(alignment: .top, spacing: 0) {
@@ -20,20 +20,29 @@ struct ShopView: View {
         ShopIcon(width: 40, height: 40, radius: 6)
         Spacer()
         VStack(alignment: .leading, spacing: 6) {
-            //Text(shop.name)
-            Text(shop.shop_name ?? "Default")
-                .font(.headline)
-                .fontWeight(.bold)
-                .foregroundColor(Color(UIColor.label))
-            AdaptingStack {
-                Text("Active listings: " + String(shop.listing_active_count) + "  ")
-               // Text(shop.released + "  ")
-               // Text(shop.domain + "  ")
-               // Text(String(shop.difficulty).capitalized)
+            
+            VStack(alignment: .leading, spacing: 6) {
+                //Text(shop.name)
+                Text(shopInfo.shop_name)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                   // .foregroundColor(Color(UIColor.label))
+                
+                HStack {
+                Text("Active listings: " + String(shopInfo.listing_active_count) + "  ")
+                if shopInfo.is_listing_sold_count_updated {
+                        Text("Sales: " + String(shopInfo.listing_sold_count) + "  ")
+                } else {
+                    HStack {
+                        Text("Sales: ")
+                        ProgressView()
+                    }
+                   
+                }
+                }
             }
-            Text("Sales: " + String(shop.listing_sold_count) + "  ")
-            //Text(shop.description)
-               // .lineLimit(2)
+            
+            
         }
             .padding(.horizontal)
             .font(.footnote)

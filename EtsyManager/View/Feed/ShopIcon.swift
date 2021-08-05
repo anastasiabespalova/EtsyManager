@@ -24,7 +24,6 @@ struct ShopIcon: View {
       Image(systemName: "play.circle.fill")
         .font(.title)
         //.colorInvert()
-        
     }
     
   }

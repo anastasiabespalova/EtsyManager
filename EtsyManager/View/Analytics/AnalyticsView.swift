@@ -20,10 +20,10 @@ struct AnalyticsView: View {
     var button: some View {
         Button("Restart") {
             withAnimation {
-                let etsy = EtsyAPI()
+                _ = EtsyAPI()
                 //etsy.getShopInfo(for: 27991754)
-                getNumberOfSales(for: "MarinAmosovaPainting")
-                getShopId(for: "MarinAmosovaPainting")
+                //etsy.getlistin
+                ShopDataManager.shared.loadAllActiveListings(id: 27991754)
             }
         }
     }

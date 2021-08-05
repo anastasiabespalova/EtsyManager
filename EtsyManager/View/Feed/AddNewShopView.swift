@@ -9,32 +9,41 @@ import SwiftUI
 
 struct AddNewShopView: View {
     @ObservedObject var newShop = AddNewShopViewModel()
+    @Binding var isPresented: Bool
+    
+    init(isPresented: Binding<Bool>) {
+            _isPresented = isPresented
+        }
+    
     var body: some View {
-        VStack {
-            HStack {
-                TextField("Enter shop id", text: $newShop.shopId)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                Button("Save") {
-                   // taskListVM.save()
-                    //taskListVM.getAllTasks()
+            NavigationView {
+                Form {
+                    
+                    TextField("Enter shop id", text: $newShop.shopId)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Button("Save") {
+                        newShop.addNewShop()
+                    }
+                    
+                    Text("Select section")
                 }
+                .navigationBarTitle("Add new shop")
+                .navigationBarItems(leading: cancel, trailing: done)
             }
-            
-          /*  List {
-                ForEach(taskListVM.tasks, id: \.id) { task in
-                    Text(task.title)
-                }.onDelete(perform: deleteTask)
-            }*/
-            
-            Spacer()
-        }.padding()
-        .onAppear(perform: {
-            //taskListVM.getAllTasks()
-        })
-        .onDisappear(perform: {
-            newShop.addNewShop()
-        })
+        }
         
-    }
+        var cancel: some View {
+            Button("Cancel") {
+                self.isPresented = false
+            }
+        }
+        
+        var done: some View {
+            Button("Done") {
+                newShop.addNewShop()
+                self.isPresented = false
+            }
+        }
+ 
 }
 

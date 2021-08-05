@@ -15,25 +15,8 @@ class EtsyAPI {
     
     static var shared = EtsyAPI()
     
-    
-    
-    func getAllActiveListings(for shopId: Int) {
-        let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
-        AF.request(requestString + apiKey).validate().responseJSON {response in
-            switch response.result {
-            case .success:
-                let json = JSON(response.data!)
-                let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
-                for index in 0..<numberOfActiveListings {
-                    // TODO: actually write down parsing
-                    print("success! listingId: \(json["results"][index]["listing_id"])")
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
+   
+
     func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)"
         AF.request(requestString + apiKey).validate().responseJSON { response in
@@ -69,6 +52,93 @@ class EtsyAPI {
         }
         print("success3!")
         
+    }
+    
+    
+    func getAllActiveListings(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
+        
+        let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
+        AF.request(requestString + apiKey).validate().responseJSON { response in
+            switch response.result {
+            case .success:
+                let json = JSON(response.data!)
+                completionHandler({
+                    var listingInfoArray: [ListingInfo] = []
+                    if json["count"].int != nil {
+                        let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
+                        
+                        for index in 0..<numberOfActiveListings {
+                            // TODO: actually write down parsing
+                            var listingInfo = ListingInfo()
+                            listingInfo.creation_tsz = json["results"][index]["creation_tsz"].floatValue
+                            listingInfo.is_digital = json["results"][index]["is_digital"].boolValue
+                            listingInfo.is_private = json["results"][index]["is_private"].boolValue
+                            listingInfo.item_dimensions_unit = json["results"][index]["is_private"].stringValue
+                            listingInfo.item_height = json["results"][index]["item_height"].intValue
+                            listingInfo.item_width = json["results"][index]["item_width"].intValue
+                            listingInfo.last_modified_tsz = json["results"][index]["last_modified_tsz"].floatValue
+                            listingInfo.listing_description = json["results"][index]["listing_description"].stringValue
+                            listingInfo.listing_id = json["results"][index]["listing_id"].intValue
+                            listingInfo.num_favorers = json["results"][index]["num_favorers"].intValue
+                            listingInfo.price = json["results"][index]["price"].stringValue
+                            listingInfo.quantity = json["results"][index]["quantity"].intValue
+                            listingInfo.state = json["results"][index]["state"].stringValue
+                            listingInfo.tags = json["results"][index]["tags"].stringValue
+                            listingInfo.title = json["results"][index]["title"].stringValue
+                            listingInfo.views = json["results"][index]["views"].intValue
+                            listingInfoArray.append(listingInfo)
+                        }
+                        
+                        
+
+                    }
+                    return listingInfoArray
+                    
+                })
+            case .failure(let error):
+                print(error.localizedDescription)
+                completionHandler({ throw error })
+            }
+        }
+    }
+    
+    
+    func getListingInfo(for listingId: Int, completionHandler: @escaping (_ inner: () throws -> ListingInfo?) -> ()) {
+        let requestString = "https://openapi.etsy.com/v2/listings/\(listingId)"
+        AF.request(requestString + apiKey).validate().responseJSON { response in
+            switch response.result {
+            case .success:
+                let json = JSON(response.data!)
+                completionHandler({
+                    var listingInfo = ListingInfo()
+                    if json["count"].int != nil, json["count"].int! == 1 {
+                        
+                        listingInfo.creation_tsz = json["results"][0]["creation_tsz"].floatValue
+                        listingInfo.is_digital = json["results"][0]["is_digital"].boolValue
+                        listingInfo.is_private = json["results"][0]["is_private"].boolValue
+                        listingInfo.item_dimensions_unit = json["results"][0]["is_private"].stringValue
+                        listingInfo.item_height = json["results"][0]["item_height"].intValue
+                        listingInfo.item_width = json["results"][0]["item_width"].intValue
+                        listingInfo.last_modified_tsz = json["results"][0]["last_modified_tsz"].floatValue
+                        listingInfo.listing_description = json["results"][0]["listing_description"].stringValue
+                        listingInfo.listing_id = listingId
+                        listingInfo.num_favorers = json["results"][0]["num_favorers"].intValue
+                        listingInfo.price = json["results"][0]["price"].stringValue
+                        listingInfo.quantity = json["results"][0]["quantity"].intValue
+                        listingInfo.state = json["results"][0]["state"].stringValue
+                        listingInfo.tags = json["results"][0]["tags"].stringValue
+                        listingInfo.title = json["results"][0]["title"].stringValue
+                        listingInfo.views = json["results"][0]["views"].intValue
+
+                    }
+                    return listingInfo
+                    
+                })
+            case .failure(let error):
+                print(error.localizedDescription)
+                completionHandler({ throw error })
+            }
+        }
     }
     
     func getListingInfo(for listingId: Int) {

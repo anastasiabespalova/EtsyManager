@@ -16,7 +16,6 @@
 		33033A3726B854F1008D9302 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A3626B854F1008D9302 /* AnalyticsView.swift */; };
 		33033A3926B854FC008D9302 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A3826B854FC008D9302 /* FeedView.swift */; };
 		33033A3B26B8550A008D9302 /* Profile+SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A3A26B8550A008D9302 /* Profile+SettingsView.swift */; };
-		33033A3D26B858CC008D9302 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A3C26B858CC008D9302 /* ViewModel.swift */; };
 		33033A3F26B85BAB008D9302 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A3E26B85BAB008D9302 /* ShopView.swift */; };
 		33033A4126B85D87008D9302 /* ShopIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A4026B85D87008D9302 /* ShopIcon.swift */; };
 		33033A4326B85E8B008D9302 /* AdaptingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A4226B85E8B008D9302 /* AdaptingStack.swift */; };
@@ -27,12 +26,19 @@
 		33033A4D26B89533008D9302 /* HTMLParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33033A4C26B89533008D9302 /* HTMLParse.swift */; };
 		3366E3D026B946D7000DF905 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3CF26B946D7000DF905 /* Shop.swift */; };
 		3366E3D226B94890000DF905 /* ShopInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3D126B94890000DF905 /* ShopInfo.swift */; };
-		3366E3DB26B95D3A000DF905 /* CoreShopViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3DA26B95D3A000DF905 /* CoreShopViewModel.swift */; };
 		3366E3DD26B95DC8000DF905 /* ShopDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3DC26B95DC7000DF905 /* ShopDataManager.swift */; };
 		3366E3E026B95F22000DF905 /* EtsyManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3DE26B95F22000DF905 /* EtsyManager.xcdatamodeld */; };
 		3366E3E326B96711000DF905 /* ShopPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3E226B96711000DF905 /* ShopPreviewViewModel.swift */; };
 		3366E3E526B9C848000DF905 /* AddNewShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3E426B9C847000DF905 /* AddNewShopView.swift */; };
 		3366E3E726B9C895000DF905 /* AddNewShopViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3E626B9C895000DF905 /* AddNewShopViewModel.swift */; };
+		3366E3E926BA8CB0000DF905 /* ShopFeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3E826BA8CB0000DF905 /* ShopFeedViewModel.swift */; };
+		3366E3EB26BAF629000DF905 /* ShopChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3EA26BAF629000DF905 /* ShopChanges.swift */; };
+		3366E3ED26BB11C7000DF905 /* ListingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3EC26BB11C7000DF905 /* ListingInfo.swift */; };
+		3366E3EF26BB23C5000DF905 /* ActiveListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3EE26BB23C5000DF905 /* ActiveListingsView.swift */; };
+		3366E3F126BB2495000DF905 /* ActiveListingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3F026BB2495000DF905 /* ActiveListingsViewModel.swift */; };
+		3366E3F326BBDBF7000DF905 /* ListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3F226BBDBF6000DF905 /* ListingView.swift */; };
+		3366E3F526BBE278000DF905 /* ListingDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3F426BBE278000DF905 /* ListingDescriptionView.swift */; };
+		3366E3F726BC155E000DF905 /* SoldListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3366E3F626BC155E000DF905 /* SoldListingsView.swift */; };
 		51CF96220EACAC2071C81936 /* Pods_EtsyManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20E3AEFF86149CC998F19A6 /* Pods_EtsyManager.framework */; };
 /* End PBXBuildFile section */
 
@@ -48,7 +54,6 @@
 		33033A3626B854F1008D9302 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
 		33033A3826B854FC008D9302 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		33033A3A26B8550A008D9302 /* Profile+SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile+SettingsView.swift"; sourceTree = "<group>"; };
-		33033A3C26B858CC008D9302 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		33033A3E26B85BAB008D9302 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		33033A4026B85D87008D9302 /* ShopIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopIcon.swift; sourceTree = "<group>"; };
 		33033A4226B85E8B008D9302 /* AdaptingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptingStack.swift; sourceTree = "<group>"; };
@@ -59,12 +64,19 @@
 		33033A4C26B89533008D9302 /* HTMLParse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParse.swift; sourceTree = "<group>"; };
 		3366E3CF26B946D7000DF905 /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
 		3366E3D126B94890000DF905 /* ShopInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopInfo.swift; sourceTree = "<group>"; };
-		3366E3DA26B95D3A000DF905 /* CoreShopViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreShopViewModel.swift; sourceTree = "<group>"; };
 		3366E3DC26B95DC7000DF905 /* ShopDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDataManager.swift; sourceTree = "<group>"; };
 		3366E3DF26B95F22000DF905 /* EtsyManager.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EtsyManager.xcdatamodel; sourceTree = "<group>"; };
 		3366E3E226B96711000DF905 /* ShopPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopPreviewViewModel.swift; sourceTree = "<group>"; };
 		3366E3E426B9C847000DF905 /* AddNewShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewShopView.swift; sourceTree = "<group>"; };
 		3366E3E626B9C895000DF905 /* AddNewShopViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewShopViewModel.swift; sourceTree = "<group>"; };
+		3366E3E826BA8CB0000DF905 /* ShopFeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopFeedViewModel.swift; sourceTree = "<group>"; };
+		3366E3EA26BAF629000DF905 /* ShopChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopChanges.swift; sourceTree = "<group>"; };
+		3366E3EC26BB11C7000DF905 /* ListingInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingInfo.swift; sourceTree = "<group>"; };
+		3366E3EE26BB23C5000DF905 /* ActiveListingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveListingsView.swift; sourceTree = "<group>"; };
+		3366E3F026BB2495000DF905 /* ActiveListingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveListingsViewModel.swift; sourceTree = "<group>"; };
+		3366E3F226BBDBF6000DF905 /* ListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingView.swift; sourceTree = "<group>"; };
+		3366E3F426BBE278000DF905 /* ListingDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDescriptionView.swift; sourceTree = "<group>"; };
+		3366E3F626BC155E000DF905 /* SoldListingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoldListingsView.swift; sourceTree = "<group>"; };
 		9741501515BFF6A4EF036CFA /* Pods-EtsyManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EtsyManager.release.xcconfig"; path = "Target Support Files/Pods-EtsyManager/Pods-EtsyManager.release.xcconfig"; sourceTree = "<group>"; };
 		A20E3AEFF86149CC998F19A6 /* Pods_EtsyManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EtsyManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED7D9707BC27B5686F86D4E2 /* Pods-EtsyManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EtsyManager.debug.xcconfig"; path = "Target Support Files/Pods-EtsyManager/Pods-EtsyManager.debug.xcconfig"; sourceTree = "<group>"; };
@@ -150,8 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				3366E3E126B966E6000DF905 /* Feed */,
-				33033A3C26B858CC008D9302 /* ViewModel.swift */,
-				3366E3DA26B95D3A000DF905 /* CoreShopViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -161,8 +171,10 @@
 			children = (
 				33033A4826B871D6008D9302 /* APIRequest.swift */,
 				33033A4A26B87AF3008D9302 /* Listing.swift */,
+				3366E3EC26BB11C7000DF905 /* ListingInfo.swift */,
 				3366E3CF26B946D7000DF905 /* Shop.swift */,
 				3366E3D126B94890000DF905 /* ShopInfo.swift */,
+				3366E3EA26BAF629000DF905 /* ShopChanges.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -190,10 +202,14 @@
 				33033A3826B854FC008D9302 /* FeedView.swift */,
 				33033A4626B864A9008D9302 /* FilterOptionsView.swift */,
 				33033A3E26B85BAB008D9302 /* ShopView.swift */,
+				3366E3F226BBDBF6000DF905 /* ListingView.swift */,
 				33033A4026B85D87008D9302 /* ShopIcon.swift */,
 				33033A4226B85E8B008D9302 /* AdaptingStack.swift */,
 				33033A4426B862C5008D9302 /* ShopFeedPage.swift */,
+				3366E3F626BC155E000DF905 /* SoldListingsView.swift */,
 				3366E3E426B9C847000DF905 /* AddNewShopView.swift */,
+				3366E3EE26BB23C5000DF905 /* ActiveListingsView.swift */,
+				3366E3F426BBE278000DF905 /* ListingDescriptionView.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -226,6 +242,8 @@
 			children = (
 				3366E3E226B96711000DF905 /* ShopPreviewViewModel.swift */,
 				3366E3E626B9C895000DF905 /* AddNewShopViewModel.swift */,
+				3366E3E826BA8CB0000DF905 /* ShopFeedViewModel.swift */,
+				3366E3F026BB2495000DF905 /* ActiveListingsViewModel.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -363,18 +381,24 @@
 				33033A4326B85E8B008D9302 /* AdaptingStack.swift in Sources */,
 				33033A3926B854FC008D9302 /* FeedView.swift in Sources */,
 				33033A4B26B87AF3008D9302 /* Listing.swift in Sources */,
-				33033A3D26B858CC008D9302 /* ViewModel.swift in Sources */,
 				33033A4126B85D87008D9302 /* ShopIcon.swift in Sources */,
 				33033A4726B864A9008D9302 /* FilterOptionsView.swift in Sources */,
+				3366E3F726BC155E000DF905 /* SoldListingsView.swift in Sources */,
 				33033A4D26B89533008D9302 /* HTMLParse.swift in Sources */,
+				3366E3EF26BB23C5000DF905 /* ActiveListingsView.swift in Sources */,
+				3366E3F126BB2495000DF905 /* ActiveListingsViewModel.swift in Sources */,
 				33033A3326B853F4008D9302 /* ContentView.swift in Sources */,
 				3366E3DD26B95DC8000DF905 /* ShopDataManager.swift in Sources */,
+				3366E3ED26BB11C7000DF905 /* ListingInfo.swift in Sources */,
+				3366E3F526BBE278000DF905 /* ListingDescriptionView.swift in Sources */,
+				3366E3EB26BAF629000DF905 /* ShopChanges.swift in Sources */,
 				33033A1E26B84BE5008D9302 /* Persistence.swift in Sources */,
 				33033A3726B854F1008D9302 /* AnalyticsView.swift in Sources */,
 				33033A3B26B8550A008D9302 /* Profile+SettingsView.swift in Sources */,
-				3366E3DB26B95D3A000DF905 /* CoreShopViewModel.swift in Sources */,
 				3366E3E726B9C895000DF905 /* AddNewShopViewModel.swift in Sources */,
 				3366E3E326B96711000DF905 /* ShopPreviewViewModel.swift in Sources */,
+				3366E3F326BBDBF7000DF905 /* ListingView.swift in Sources */,
+				3366E3E926BA8CB0000DF905 /* ShopFeedViewModel.swift in Sources */,
 				33033A1526B84BDF008D9302 /* EtsyManagerApp.swift in Sources */,
 				33033A4526B862C5008D9302 /* ShopFeedPage.swift in Sources */,
 				33033A3F26B85BAB008D9302 /* ShopView.swift in Sources */,
