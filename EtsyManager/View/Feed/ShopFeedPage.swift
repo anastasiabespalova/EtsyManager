@@ -13,7 +13,10 @@ struct ShopFeedPage: View {
     @State private var currentTab = 0
     @State private var showFilters = false
     
+    @Binding var updateActiveListingsFor: [Int]
+    
     @ObservedObject var activeListings: ActiveListingsViewModel = ActiveListingsViewModel()
+    
     var body: some View {
         VStack {
             TabView(selection: $currentTab,
@@ -38,15 +41,20 @@ struct ShopFeedPage: View {
                            }
                 }
                 .sheet(isPresented: $showFilters) {
-                  FilterOptionsView()
+                 // FilterOptionsView()
+                    ActiveListingsFilterView()
                 }
                
                 
         }
         .onAppear() {
+            if updateActiveListingsFor.contains(shopInfo.shop_id!) {
                 activeListings.getActiveListings(shopId: shopInfo.shop_id!)
-               // activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
-            //activeListings.getActiveListingsForShop(shopId: shopInfo.shop_id!)
+                updateActiveListingsFor.remove(at: updateActiveListingsFor.firstIndex(of: shopInfo.shop_id!)!)
+            } else {
+                activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
+            }
+           // activeListings.resetAllRecords()
             
         }
      

@@ -10,10 +10,12 @@ import SwiftUI
 struct AddNewShopView: View {
     @ObservedObject var newShop = AddNewShopViewModel()
     @Binding var isPresented: Bool
-    
+    @Binding var updateActiveListingsFor: [Int]
+   /*
     init(isPresented: Binding<Bool>) {
             _isPresented = isPresented
-        }
+        
+        }*/
     
     var body: some View {
             NavigationView {
@@ -22,7 +24,9 @@ struct AddNewShopView: View {
                     TextField("Enter shop id", text: $newShop.shopId)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     Button("Save") {
-                        newShop.addNewShop()
+                        if newShop.addNewShop() {
+                            updateActiveListingsFor.append(Int(newShop.shopId)!)
+                        }
                     }
                     
                     Text("Select section")
@@ -40,7 +44,9 @@ struct AddNewShopView: View {
         
         var done: some View {
             Button("Done") {
-                newShop.addNewShop()
+                if newShop.addNewShop() {
+                    updateActiveListingsFor.append(Int(newShop.shopId)!)
+                }
                 self.isPresented = false
             }
         }

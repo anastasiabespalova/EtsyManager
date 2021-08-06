@@ -12,24 +12,30 @@ class ActiveListingsViewModel: ObservableObject {
 
     @Published var activeListingsInfo: [ListingInfo] = []
     var shopIds: [Int] = []
-    @Published var totalActiveListingsInfo: [[ListingInfo]] = [[]]
+  //  @Published var totalActiveListingsInfo: [[ListingInfo]] = [[]]
     
     func getActiveListings(shopId: Int) {
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let listings = ShopDataManager.shared.getActiveListingsForShop(id: shopId)
+//        DispatchQueue.global(qos: .default).async { [weak self] in
+//            let listings = ShopDataManager.shared.getActiveListingsForShop(id: shopId)
+//
+//        DispatchQueue.main.async {
+//            self!.activeListingsInfo.removeAll()
+//            for index in 0..<listings.count {
+//                self!.activeListingsInfo.append(ListingInfo(listing: listings[index]))
+//            }
+//        }
+//        }
         
-        DispatchQueue.main.async {
-            self!.activeListingsInfo.removeAll()
-            for index in 0..<listings.count {
-                self!.activeListingsInfo.append(ListingInfo(listing: listings[index]))
-            }
-        }
-        }
+        let listings = ShopDataManager.shared.getActiveListingsForShop(id: shopId)
+        activeListingsInfo.removeAll()
+                    for index in 0..<listings.count {
+                        activeListingsInfo.append(ListingInfo(listing: listings[index]))
+                    }
     }
     
     // update existing listings
-    func getActiveListingsForShop(shopId: Int) {
+  /*  func getActiveListingsForShop(shopId: Int) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let listings = ShopDataManager.shared.getActiveListingsForShop(id: shopId)
         
@@ -67,25 +73,32 @@ class ActiveListingsViewModel: ObservableObject {
                 }
             }
         }
-    }
+    } */
     
     //load active listings from memory
     func loadActiveListings(shopId: Int) {
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//        DispatchQueue.global(qos: .default).async { [weak self] in
+//            let listings = ShopDataManager.shared.loadActiveListingsForShop(id: shopId)
+//
+//        DispatchQueue.main.async {
+//            self!.activeListingsInfo.removeAll()
+//            for index in 0..<listings.count {
+//                self!.activeListingsInfo.append(ListingInfo(listing: listings[index]))
+//            }
+//        }
+//        }
+        
             let listings = ShopDataManager.shared.loadActiveListingsForShop(id: shopId)
         
-        DispatchQueue.main.async {
-            self!.activeListingsInfo.removeAll()
+            activeListingsInfo.removeAll()
             for index in 0..<listings.count {
-                self!.activeListingsInfo.append(ListingInfo(listing: listings[index]))
+                activeListingsInfo.append(ListingInfo(listing: listings[index]))
             }
-        }
-        }
     }
     
     func resetAllRecords() {
-        ShopDataManager.shared.resetAllRecords()
+        ShopDataManager.shared.resetAllListings()
     }
     
     func getShopIndex(shopId: Int) -> Int {

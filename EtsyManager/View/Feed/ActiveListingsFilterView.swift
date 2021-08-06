@@ -1,13 +1,13 @@
 //
-//  FilterOptionsView.swift
+//  ActiveListingsFilterView.swift
 //  EtsyManager
 //
-//  Created by Анастасия Беспалова on 02.08.2021.
+//  Created by Анастасия Беспалова on 06.08.2021.
 //
 
 import SwiftUI
 
-struct FilterOptionsView: View {
+struct ActiveListingsFilterView: View {
     @State private var animationAmount: CGFloat = 1
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.verticalSizeClass) var sizeClass
@@ -72,34 +72,35 @@ struct FilterOptionsView: View {
                                    .padding(.horizontal, 25)
                 }
                 
-}//VStack for 3 criterias
- .padding([.leading, .trailing], 20)
-     Spacer()
+            }//VStack for 3 criterias
+             .padding([.leading, .trailing], 20)
+                 Spacer()
 
-  // button moved from here into below background view !!
+              // button moved from here into below background view !!
 
-}.background(ActiveListingsBottomView(presentation: presentationMode) {
- Button {
-     presentationMode.wrappedValue.dismiss()
-     UserDefaults.standard.set(true, forKey: "LaunchedBefore")
- } label: {
-     Text("Apply")
-         .fontWeight(.medium)
-         .padding([.top, .bottom], 15)
-         .padding([.leading, .trailing], 90)
-         .background(Color.black)
-         .foregroundColor(.white)
-         .cornerRadius(15)
-        .scaledToFill()
- }
-})
-//Main VStack
+            }.background(BottomView(presentation: presentationMode) {
+             Button {
+                 presentationMode.wrappedValue.dismiss()
+                 UserDefaults.standard.set(true, forKey: "LaunchedBefore")
+             } label: {
+                 Text("Apply")
+                     .fontWeight(.medium)
+                     .padding([.top, .bottom], 15)
+                     .padding([.leading, .trailing], 90)
+                     .background(Color.black)
+                     .foregroundColor(.white)
+                     .cornerRadius(15)
+                    .scaledToFill()
+             }
+
+            })
+            //Main VStack
+    }
 }
-}
 
 
 
-struct ActiveListingsBottomView<Content: View>: UIViewRepresentable {
+struct BottomView<Content: View>: UIViewRepresentable {
     @Binding var presentationMode: PresentationMode
     private var content: () -> Content
 

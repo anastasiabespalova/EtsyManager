@@ -13,11 +13,13 @@ class AddNewShopViewModel: ObservableObject {
     var isDigit = true
     //@Published var shopStruct = ShopInfo()
     
-    func addNewShop() {
+    func addNewShop() -> Bool {
         if let shopIdInt = Int(shopId) {
-           
+           // TODO: write down correct return value (if INT wasn't correct shop id)
                 ShopDataManager.shared.loadShopWithId(shopIdInt)
-            
+            return true
+        } else {
+            return false
         }
     }
 }

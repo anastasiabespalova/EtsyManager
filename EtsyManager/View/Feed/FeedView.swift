@@ -9,21 +9,26 @@ import SwiftUI
 
 struct FeedView: View {
     
-
+    @State private var isDone: Bool = true
     @State private var showFilters = false
     @State private var addNewShop = false
     @State private var shouldUpdate = false
     @ObservedObject private var shopList = ShopPreviewViewModel()
-
     
     var body: some View {
         
-        NavigationView {
+       // RefreshableNavigationView(title: "Numbers", action:{
+        //            print("refresh")
+       // }, isDone: $isDone) {
+        NavigationView{
             List {
+            
                 ForEach(shopList.shopsInfo.indices, id: \.self) { idx in
                 ZStack {
-                    //NavigationLink( destination: ShopFeedPage(shopInfo: $shopList.shopsInfo[idx])) {
-                    NavigationLink( destination: ShopFeedPage(shopInfo: $shopList.shopsInfo[idx])) {
+                    // NavigationLink( destination: ShopFeedPage(shopInfo: $shopList.shopsInfo[idx])) {
+                    NavigationLink( destination:
+                                        ShopFeedPage(shopInfo: $shopList.shopsInfo[idx],
+                                                     updateActiveListingsFor: $shopList.updateActiveListingsFor))  {
                         EmptyView()
                     }
                     .opacity(0)
@@ -57,7 +62,8 @@ struct FeedView: View {
             FilterOptionsView()
           }
         .sheet(isPresented: $addNewShop) {
-              AddNewShopView(isPresented: self.$addNewShop)
+              AddNewShopView(isPresented: self.$addNewShop,
+                             updateActiveListingsFor: $shopList.updateActiveListingsFor)
                 .onDisappear() {
                     shopList.updateShopsAfterNew()
                     
@@ -66,17 +72,14 @@ struct FeedView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
-            if shouldUpdate {
-                shouldUpdate = false
-                shopList.updateAllShops()
-                shopList.updateAllShopsSoldListingsCount()
-            } 
+
         }
      
     }
     
     init() {
         shopList.updateAllShops()
+        
         
         // 1. White title on black background
         let appearance = UINavigationBarAppearance()
@@ -116,3 +119,5 @@ extension Binding where Value == Bool {
         )
     }
 }
+
+

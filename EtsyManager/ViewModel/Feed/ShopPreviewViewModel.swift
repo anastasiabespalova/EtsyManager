@@ -13,6 +13,7 @@ class ShopPreviewViewModel: ObservableObject {
     var title: String = ""
     @Published var shopsInfo: [ShopInfo] = []
     @Published var shopChanges: [ShopChanges] = []
+    var updateActiveListingsFor: [Int] = []
     
     func getAllShops() {
         shopsInfo.removeAll()
@@ -26,7 +27,10 @@ class ShopPreviewViewModel: ObservableObject {
         shopsInfo.removeAll()
         ShopDataManager.shared.updateAllShops().forEach { shop in
             shopsInfo.append(ShopInfo(shop: shop))
+            updateActiveListingsFor.append(Int(shop.shop_id))
         }
+        //print(updateActiveListingsFor)
+        
     }
     
     func udpateShopSoldListingCount(id: Int, idInShops: Int) {
@@ -62,13 +66,14 @@ class ShopPreviewViewModel: ObservableObject {
     }
     
     init() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        /*
+        DispatchQueue.global(qos: .default).async {
             DispatchQueue.main.async { [weak self] in
                 self?.updateAllShopsSoldListingsCount()
                 self!.updateAllShopsActiveListings()
                 
             }
-        }
+        }*/
     }
 }
 

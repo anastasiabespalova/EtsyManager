@@ -26,6 +26,7 @@ struct ShopView: View {
                 Text(shopInfo.shop_name)
                     .font(.headline)
                     .fontWeight(.bold)
+                    .foregroundColor(.black)
                    // .foregroundColor(Color(UIColor.label))
                 
                 HStack {

@@ -18,11 +18,16 @@ struct ShopIcon: View {
 
   var body: some View {
     ZStack {
-      RoundedRectangle(cornerRadius: radius)
-        .fill(Color.gradientDark)
-        .frame(width: width, height: height)
-      Image(systemName: "play.circle.fill")
-        .font(.title)
+      //RoundedRectangle(cornerRadius: radius)
+      //  .fill(Color.gradientDark)
+       // .frame(width: width, height: height)
+        Image("SampleShopImage2")
+            .resizable()
+            .frame(width: 50, height: 50)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.black, lineWidth: 1))
+           // .shadow(radius: 10)
+       // .font(.title)
         //.colorInvert()
     }
     

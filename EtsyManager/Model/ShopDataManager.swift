@@ -71,45 +71,21 @@ class ShopDataManager {
     }
     
     func getActiveListingsForShop(id: Int) -> [Listing] {
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.loadAllActiveListings(id: id)
-            
-          
-        }
+//        DispatchQueue.global(qos: .default).async {
+//            self.loadAllActiveListings(id: id)
+//        }
+        loadAllActiveListings(id: id)
+        
         let associatedShop = Shop.withId(id, context: self.viewContext)
                 let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
         do {
             
-              return try viewContext.fetch(request)
+
+                let listings = try viewContext.fetch(request)
+              return listings
           } catch {
               return []
           }
-      /*  loadAllActiveListings(id: id)
-        let associatedShop = Shop.withId(id, context: viewContext)
-        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
-        do {
-            return try viewContext.fetch(request)
-        } catch {
-            return []
-        }
-        */
-       /* let myFetch:NSFetchRequest<Listing> = Listing.fetchRequest()
-        let associatedShop = Shop.withId(id, context: viewContext)
-        let myPredicate = NSPredicate(format: "fromShop == %@", (associatedShop))
-        myFetch.predicate = myPredicate
-        do {
-                return try viewContext.fetch(myFetch)
-            } catch{
-               return []
-            } */
-       /* let myPredicate = NSPredicate(format: "fromShop_.shop_id = %@", id)
-        let myFetch: NSFetchRequest<Listing> = Listing.fetchRequest()
-        myFetch.predicate = myPredicate
-        do {
-                return try viewContext.fetch(myFetch)
-            } catch{
-               return []
-            } */
     }
     
     
@@ -174,6 +150,11 @@ class ShopDataManager {
     
     // for shop with shop_id = id
     func loadAllActiveListings(id: Int) {
+//        DispatchQueue.global(qos: .default).async {
+//            _ = Listing.loadAllActive(id, context: self.viewContext)
+//            self.save()
+//        }
+        
         _ = Listing.loadAllActive(id, context: viewContext)
         save()
     }
@@ -181,10 +162,26 @@ class ShopDataManager {
     
     // MARK: - Deleting
     
-    func resetAllRecords() // entity = Your_Entity_Name
+    func resetAllListings() // entity = Your_Entity_Name
         {
 
             let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Listing")
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+            do
+            {
+                try viewContext.execute(deleteRequest)
+                try viewContext.save()
+            }
+            catch
+            {
+                print ("There was an error")
+            }
+        }
+    
+    func resetAllShops() // entity = Your_Entity_Name
+        {
+
+            let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Shop")
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
             do
             {

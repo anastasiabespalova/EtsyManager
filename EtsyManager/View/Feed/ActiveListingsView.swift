@@ -25,7 +25,6 @@ struct ActiveListingsView: View {
                     }
                     .opacity(0)
                  ListingView(listingInfo: $activeListings.activeListingsInfo[idx])
-                    Text("From shop \(activeListings.activeListingsInfo[idx].shop_id)")
                 }
                 .frame(
                   maxWidth: .infinity,
@@ -34,7 +33,10 @@ struct ActiveListingsView: View {
                 .listRowInsets(EdgeInsets())
                 .padding(.top, 8)
                 .background(Color.white)
+                            
             }
+            Text("Total active listings: \(activeListings.activeListingsInfo.count)")
+                .font(.caption)
         }
     
         .onAppear() {

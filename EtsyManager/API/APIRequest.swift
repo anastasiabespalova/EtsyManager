@@ -15,7 +15,6 @@ class EtsyAPI {
     
     static var shared = EtsyAPI()
     
-   
 
     func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)"
@@ -56,9 +55,9 @@ class EtsyAPI {
     
     
     func getAllActiveListings(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
-        
+        let queue = DispatchQueue(label: "com.test.api", qos: .background, attributes: .concurrent)
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
-        AF.request(requestString + apiKey).validate().responseJSON { response in
+        AF.request(requestString + apiKey).validate().responseJSON(queue: queue) { response in
             switch response.result {
             case .success:
                 let json = JSON(response.data!)
@@ -77,7 +76,7 @@ class EtsyAPI {
                             listingInfo.item_height = json["results"][index]["item_height"].intValue
                             listingInfo.item_width = json["results"][index]["item_width"].intValue
                             listingInfo.last_modified_tsz = json["results"][index]["last_modified_tsz"].floatValue
-                            listingInfo.listing_description = json["results"][index]["listing_description"].stringValue
+                            listingInfo.listing_description = json["results"][index]["description"].stringValue
                             listingInfo.listing_id = json["results"][index]["listing_id"].intValue
                             listingInfo.num_favorers = json["results"][index]["num_favorers"].intValue
                             listingInfo.price = json["results"][index]["price"].stringValue
@@ -88,9 +87,6 @@ class EtsyAPI {
                             listingInfo.views = json["results"][index]["views"].intValue
                             listingInfoArray.append(listingInfo)
                         }
-                        
-                        
-
                     }
                     return listingInfoArray
                     
