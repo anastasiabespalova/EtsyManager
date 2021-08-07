@@ -54,7 +54,7 @@ struct ShopFeedPage: View {
             } else {
                 activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
             }
-           // activeListings.resetAllRecords()
+         //   activeListings.resetAllRecords()
             
         }
      

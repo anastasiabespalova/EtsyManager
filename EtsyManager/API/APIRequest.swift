@@ -10,11 +10,14 @@ import Foundation
 import Alamofire
 import AlamofireImage
 import SwiftyJSON
+import CoreData
 
 class EtsyAPI {
     
     static var shared = EtsyAPI()
     
+ 
+    let limit = 100
 
     func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)"
@@ -55,18 +58,19 @@ class EtsyAPI {
     
     
     func getAllActiveListings(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
-        let queue = DispatchQueue(label: "com.test.api", qos: .background, attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.test.api", qos: .default)
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
-        AF.request(requestString + apiKey).validate().responseJSON(queue: queue) { response in
+        AF.request(requestString + apiKey + "&limit=\(limit)").validate().responseJSON(queue: queue) { response in
             switch response.result {
             case .success:
+                
                 let json = JSON(response.data!)
                 completionHandler({
                     var listingInfoArray: [ListingInfo] = []
                     if json["count"].int != nil {
                         let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
-                        
-                        for index in 0..<numberOfActiveListings {
+                        let numOfListingsInRequest = (numberOfActiveListings > self.limit) ? self.limit : numberOfActiveListings
+                        for index in 0..<numOfListingsInRequest {
                             // TODO: actually write down parsing
                             var listingInfo = ListingInfo()
                             listingInfo.creation_tsz = json["results"][index]["creation_tsz"].floatValue

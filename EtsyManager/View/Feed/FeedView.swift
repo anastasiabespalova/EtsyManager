@@ -14,6 +14,7 @@ struct FeedView: View {
     @State private var addNewShop = false
     @State private var shouldUpdate = false
     @ObservedObject private var shopList = ShopPreviewViewModel()
+
     
     var body: some View {
         
@@ -79,6 +80,7 @@ struct FeedView: View {
     
     init() {
         shopList.updateAllShops()
+        shopList.updateAllShopsSoldListingsCount()
         
         
         // 1. White title on black background

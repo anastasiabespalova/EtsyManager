@@ -23,7 +23,7 @@ struct AnalyticsView: View {
                 _ = EtsyAPI()
                 //etsy.getShopInfo(for: 27991754)
                 //etsy.getlistin
-                ShopDataManager.shared.loadAllActiveListings(id: 27991754)
+               // ShopDataManager.shared.loadAllActiveListings(id: 27991754)
             }
         }
     }
