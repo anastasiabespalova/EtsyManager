@@ -59,33 +59,35 @@ class ShopDataManager {
         }
     }
     
+    
+    // TODO: get item with earliest date
     func loadActiveListingsForShop(id: Int) -> [Listing] {
         let associatedShop = Shop.withId(id, context: self.viewContext)
-                let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
+        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
+        //request.propertiesToGroupBy = [ "listing_id" ]
+        request.sortDescriptors = [ NSSortDescriptor(key: "updated_at", ascending: false) ]
         do {
-            
-              return try viewContext.fetch(request)
+            return try viewContext.fetch(request)
+               
           } catch {
               return []
           }
     }
     
+    // TODO: get item with earliest date
     func getActiveListingsForShop(id: Int) -> [Listing] {
-//        DispatchQueue.global(qos: .default).async {
-//            self.loadAllActiveListings(id: id)
-//        }
+        
         loadAllActiveListings(id: id)
         
         let associatedShop = Shop.withId(id, context: self.viewContext)
-                let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
+        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
+        
         do {
-            
-
-                let listings = try viewContext.fetch(request)
-              return listings
-          } catch {
-              return []
-          }
+            let listings = try viewContext.fetch(request)
+            return listings
+        } catch {
+            return []
+        }
     }
     
     
@@ -154,9 +156,14 @@ class ShopDataManager {
 //            _ = Listing.loadAllActive(id, context: self.viewContext)
 //            self.save()
 //        }
+        let activeListingsNumber = Shop.withId(id, context: viewContext).listing_active_count
+        var offset = 0
+        while offset < activeListingsNumber {
+            _ = Listing.loadAllActive(id, offset: offset, context: viewContext)
+            save()
+            offset += 100
+        }
         
-        _ = Listing.loadAllActive(id, context: viewContext)
-        save()
     }
     
     

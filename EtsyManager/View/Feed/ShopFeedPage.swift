@@ -53,8 +53,7 @@ struct ShopFeedPage: View {
                 updateActiveListingsFor.remove(at: updateActiveListingsFor.firstIndex(of: shopInfo.shop_id!)!)
             } else {
                 activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
-            }
-         //   activeListings.resetAllRecords()
+            } 
             
         }
      

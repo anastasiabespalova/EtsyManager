@@ -16,7 +16,7 @@ class EtsyAPI {
     
     static var shared = EtsyAPI()
     
- 
+    
     let limit = 100
 
     func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
@@ -57,10 +57,10 @@ class EtsyAPI {
     }
     
     
-    func getAllActiveListings(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
+    func getAllActiveListings(for shopId: Int, offset: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
         let queue = DispatchQueue(label: "com.test.api", qos: .default)
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
-        AF.request(requestString + apiKey + "&limit=\(limit)").validate().responseJSON(queue: queue) { response in
+        AF.request(requestString + apiKey + "&limit=\(limit)" + "&offset=\(offset)").validate().responseJSON(queue: queue) { response in
             switch response.result {
             case .success:
                 
@@ -69,7 +69,7 @@ class EtsyAPI {
                     var listingInfoArray: [ListingInfo] = []
                     if json["count"].int != nil {
                         let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
-                        let numOfListingsInRequest = (numberOfActiveListings > self.limit) ? self.limit : numberOfActiveListings
+                        let numOfListingsInRequest = (numberOfActiveListings > (self.limit + offset)) ? self.limit : (numberOfActiveListings - offset)
                         for index in 0..<numOfListingsInRequest {
                             // TODO: actually write down parsing
                             var listingInfo = ListingInfo()
@@ -86,7 +86,14 @@ class EtsyAPI {
                             listingInfo.price = json["results"][index]["price"].stringValue
                             listingInfo.quantity = json["results"][index]["quantity"].intValue
                             listingInfo.state = json["results"][index]["state"].stringValue
-                            listingInfo.tags = json["results"][index]["tags"].stringValue
+                            //listingInfo.tags = json["results"][index]["tags"][0].stringValue
+                            var res = ""
+                            for tag in json["results"][index]["tags"] {
+                                res = res + tag.1.stringValue + "; "
+                            }
+                            
+                            listingInfo.tags = res
+                            
                             listingInfo.title = json["results"][index]["title"].stringValue
                             listingInfo.views = json["results"][index]["views"].intValue
                             listingInfoArray.append(listingInfo)

@@ -21,42 +21,38 @@ extension Listing: Comparable {
             return request
         }
     
-    static func loadAllActive(_ id: Int, context: NSManagedObjectContext) -> [ListingInfo] {
+    static func loadAllActive(_ id: Int, offset: Int, context: NSManagedObjectContext) -> [ListingInfo] {
         var listingInfoArray: [ListingInfo] = []
         
-      //  let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-      //  privateMOC.parent = context
+        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        privateMOC.parent = context
         
-      //  privateMOC.perform {
+        privateMOC.perform {
         
         let etsy = EtsyAPI()
             
-            etsy.getAllActiveListings(for: id) { (inner: () throws -> [ListingInfo]?) -> Void in
+            etsy.getAllActiveListings(for: id, offset: offset) { (inner: () throws -> [ListingInfo]?) -> Void in
                 do {
                     listingInfoArray = try inner()!
                     listingInfoArray.indices.forEach { idx in
                         listingInfoArray[idx].shop_id = id
                     }
                     listingInfoArray.forEach { listingInfo in
-                        let request = fetchRequest(NSPredicate(format: "listing_id = %@", NSNumber(value: listingInfo.listing_id)))
-                        let listings = (try? context.fetch(request)) ?? []
-                        if listings.first != nil {
-                            // if found, update
-                            //self.update(from: listingInfo, context: context, privateContext: privateMOC)
-                            self.update(from: listingInfo, context: context)
-                        } else {
-                            // if not, create one and fetch from FlightAware
-                            let listing = Listing(context: context)
+                       // let request = fetchRequest(NSPredicate(format: "listing_id = %@", NSNumber(value: listingInfo.listing_id)))
+                       // let listings = (try? privateMOC.fetch(request)) ?? []
+                        // if listings.first != nil {
+                          //  self.update(from: listingInfo, context: context, privateContext: privateMOC)
+                      //  } else {
+                            let listing = Listing(context: privateMOC)
                             listing.listing_id = Int64(listingInfo.listing_id)
-                            self.update(from: listingInfo, context: context)
-                           // self.update(from: listingInfo, context: context, privateContext: privateMOC)
-                        }
+                            self.update(from: listingInfo, context: context, privateContext: privateMOC)
+                      //  }
                     }
                 } catch let error {
                    print(error)
                 }
               }
-      //  }
+        }
         return listingInfoArray
     }
         
@@ -69,20 +65,27 @@ extension Listing: Comparable {
                 // if found, return it
                 return listing
             } else {
+                let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+                privateMOC.parent = context
+                //let listing = Listing(context: context)
+                let listing = Listing(context: privateMOC)
+                privateMOC.perform {
+                
                 // if not, create one and fetch from FlightAware
-                let listing = Listing(context: context)
+                
                 listing.listing_id = Int64(id)
                 let etsy = EtsyAPI()
                 var listingInfo = ListingInfo()
                 etsy.getListingInfo(for: id) { (inner: () throws -> ListingInfo?) -> Void in
                     do {
                         listingInfo = try inner() ?? ListingInfo()
-                        self.update(from: listingInfo, context: context)
-                       
+                        //self.update(from: listingInfo, context: context)
+                        self.update(from: listingInfo, context: context, privateContext: privateMOC)
                     } catch let error {
                        print(error)
                     }
                   }
+                }
                 //print("success2! shopName: \(listingInfo.listing_title)")
                 return listing 
             }
@@ -97,7 +100,8 @@ extension Listing: Comparable {
        // if let id = info.listing_id {
        //let id = info.shop_id!
         let id = info.listing_id
-        let listing = self.withId(id, context: context)
+       // let listing = self.withId(id, context: context)
+        let listing = self.withId(id, context: privateContext)
         listing.listing_id = Int64(info.listing_id)
             listing.creation_tsz = info.creation_tsz
             listing.is_digital = info.is_digital
@@ -114,7 +118,12 @@ extension Listing: Comparable {
             listing.tags = info.tags
             listing.title = info.title
         listing.views = Int16(info.views)
-        listing.fromShop = Shop.withId(info.shop_id, context: context)
+        //listing.fromShop = Shop.withId(info.shop_id, context: context)
+        listing.fromShop = Shop.withId(info.shop_id, context: privateContext)
+        
+        let date = Date()
+        listing.setValue(date.format(), forKey: "updated_at")
+        
         listing.objectWillChange.send()
         print("listing: \(listing.title ?? "no name")")
         
@@ -130,10 +139,6 @@ extension Listing: Comparable {
             } catch {
                 fatalError("Failure to save context: \(error)")
             }
-                /*
-                airport.flightsTo.forEach { $0.objectWillChange.send() }
-                airport.flightsFrom.forEach { $0.objectWillChange.send() } */
-              //  try? context.save()
             }
     
     static func update(from info: ListingInfo, context: NSManagedObjectContext) {
@@ -158,6 +163,10 @@ extension Listing: Comparable {
             listing.title = info.title
         listing.views = Int16(info.views)
         listing.fromShop = Shop.withId(info.shop_id, context: context)
+        
+        let date = Date()
+        listing.setValue(date.format(), forKey: "updated_at")
+        
         listing.objectWillChange.send()
         print("listing: \(listing.title ?? "no name")")
         try? context.save()
