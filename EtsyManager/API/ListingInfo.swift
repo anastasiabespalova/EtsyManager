@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct ListingInfo: Codable, Hashable, Identifiable, Comparable {
+struct ListingInfo: Codable, Identifiable, Comparable {
+    static func == (lhs: ListingInfo, rhs: ListingInfo) -> Bool {
+        lhs.listing_id == rhs.listing_id
+    }
+    
     var id: Int { listing_id }
     
     var creation_tsz: Float

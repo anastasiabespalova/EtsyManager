@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ListingDescriptionView: View {
-    @Binding var listingInfo: ListingInfo
+   // @Binding var listingInfo: ListingInfo
+    @State var listingInfo: ListingInfo
         @State var index = 0
 
         var images = ["SampleListingImage1", "SampleListingImage2"]

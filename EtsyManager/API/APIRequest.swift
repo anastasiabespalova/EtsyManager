@@ -16,7 +16,7 @@ class EtsyAPI {
     
     static var shared = EtsyAPI()
     
-    
+  
     let limit = 100
 
     func getShopInfo(for shopId: Int, completionHandler: @escaping (_ inner: () throws -> ShopInfo?) -> ()) {
@@ -86,12 +86,12 @@ class EtsyAPI {
                             listingInfo.price = json["results"][index]["price"].stringValue
                             listingInfo.quantity = json["results"][index]["quantity"].intValue
                             listingInfo.state = json["results"][index]["state"].stringValue
+                            
                             //listingInfo.tags = json["results"][index]["tags"][0].stringValue
                             var res = ""
                             for tag in json["results"][index]["tags"] {
                                 res = res + tag.1.stringValue + "; "
                             }
-                            
                             listingInfo.tags = res
                             
                             listingInfo.title = json["results"][index]["title"].stringValue

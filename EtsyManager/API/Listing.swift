@@ -38,15 +38,15 @@ extension Listing: Comparable {
                         listingInfoArray[idx].shop_id = id
                     }
                     listingInfoArray.forEach { listingInfo in
-                       // let request = fetchRequest(NSPredicate(format: "listing_id = %@", NSNumber(value: listingInfo.listing_id)))
-                       // let listings = (try? privateMOC.fetch(request)) ?? []
-                        // if listings.first != nil {
-                          //  self.update(from: listingInfo, context: context, privateContext: privateMOC)
-                      //  } else {
+                        let request = fetchRequest(NSPredicate(format: "listing_id = %@", NSNumber(value: listingInfo.listing_id)))
+                        let listings = (try? privateMOC.fetch(request)) ?? []
+                         if listings.first != nil {
+                            self.update(from: listingInfo, context: context, privateContext: privateMOC)
+                        } else {
                             let listing = Listing(context: privateMOC)
                             listing.listing_id = Int64(listingInfo.listing_id)
                             self.update(from: listingInfo, context: context, privateContext: privateMOC)
-                      //  }
+                        }
                     }
                 } catch let error {
                    print(error)
@@ -128,18 +128,18 @@ extension Listing: Comparable {
         print("listing: \(listing.title ?? "no name")")
         
         do {
-                try privateContext.save()
+            try privateContext.save()
             context.performAndWait {
-                    do {
-                        try context.save()
-                    } catch {
-                        fatalError("Failure to save context: \(error)")
-                    }
+                do {
+                    try context.save()
+                } catch {
+                    fatalError("Failure to save context: \(error)")
                 }
-            } catch {
+            }
+        } catch {
                 fatalError("Failure to save context: \(error)")
-            }
-            }
+        }
+    }
     
     static func update(from info: ListingInfo, context: NSManagedObjectContext) {
        // if let id = info.listing_id {

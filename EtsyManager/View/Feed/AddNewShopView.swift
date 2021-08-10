@@ -21,11 +21,11 @@ struct AddNewShopView: View {
             NavigationView {
                 Form {
                     
-                    TextField("Enter shop id", text: $newShop.shopId)
+                    TextField("Enter shop name", text: $newShop.shopName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     Button("Save") {
                         if newShop.addNewShop() {
-                            updateActiveListingsFor.append(Int(newShop.shopId)!)
+                            updateActiveListingsFor.append(newShop.shopId)
                         }
                     }
                     
@@ -34,6 +34,7 @@ struct AddNewShopView: View {
                 .navigationBarTitle("Add new shop")
                 .navigationBarItems(leading: cancel, trailing: done)
             }
+
         }
         
         var cancel: some View {
@@ -45,7 +46,7 @@ struct AddNewShopView: View {
         var done: some View {
             Button("Done") {
                 if newShop.addNewShop() {
-                    updateActiveListingsFor.append(Int(newShop.shopId)!)
+                    updateActiveListingsFor.append(newShop.shopId)
                 }
                 self.isPresented = false
             }

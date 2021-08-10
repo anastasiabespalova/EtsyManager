@@ -46,6 +46,7 @@ extension Shop {
                 etsy.getShopInfo(for: id) { (inner: () throws -> ShopInfo?) -> Void in
                     do {
                         shopInfo = try inner()!
+                        
                        self.updateExistingShop(from: shopInfo, for: shop, context: context)
                         
                     } catch let error {
@@ -59,7 +60,7 @@ extension Shop {
             }
     }
     
-
+    
     
     static func withId(_ id: Int, context: NSManagedObjectContext) -> Shop {
             // look up icao in Core Data
@@ -94,24 +95,22 @@ extension Shop {
     
     static func update(from info: ShopInfo, context: NSManagedObjectContext) {
         if let id = info.shop_id {
-       //let id = info.shop_id!
-                let shop = self.withId(id, context: context)
-                shop.creation_tsz = info.creation_tsz
-                shop.digital_listing_count = Int16(info.digital_listing_count)
-                shop.digital_sale_message = info.digital_sale_message
-                shop.icon_url_fullxfull = info.icon_url_fullxfull
-                shop.last_modified_tsz = info.last_modified_tsz
-                shop.listing_active_count = Int16(info.listing_active_count)
-                shop.listing_inactive_count = Int16(info.listing_inactive_count)
-                shop.listing_sold_count = Int16(info.listing_sold_count)
-                shop.sale_message = info.sale_message
-                shop.shop_name = info.shop_name
-                shop.is_listing_sold_count_updated = false
-        print("shop_name: \(shop.shop_name ?? "no name")")
-                /*
-                airport.flightsTo.forEach { $0.objectWillChange.send() }
-                airport.flightsFrom.forEach { $0.objectWillChange.send() } */
-                try? context.save()
+            let shop = self.withId(id, context: context)
+            shop.creation_tsz = info.creation_tsz
+            shop.digital_listing_count = Int16(info.digital_listing_count)
+            shop.digital_sale_message = info.digital_sale_message
+            shop.icon_url_fullxfull = info.icon_url_fullxfull
+            shop.last_modified_tsz = info.last_modified_tsz
+            shop.listing_active_count = Int16(info.listing_active_count)
+            shop.listing_inactive_count = Int16(info.listing_inactive_count)
+            shop.listing_sold_count = Int16(info.listing_sold_count)
+            shop.sale_message = info.sale_message
+            shop.shop_name = info.shop_name
+            shop.is_listing_sold_count_updated = false
+            
+            
+            print("shop_name: \(shop.shop_name ?? "no name")")
+            try? context.save()
             }
         }
     
@@ -120,24 +119,29 @@ extension Shop {
             set { withListings_ = newValue as NSSet }
         }
     
+    var withListingsHistory: Set<ListingsCountHistory> {
+            get { (withListingsHistory_ as? Set<ListingsCountHistory>) ?? [] }
+            set { withListingsHistory_ = newValue as NSSet }
+        }
+    
+    
     static func updateExistingShop(from info: ShopInfo, for shop: Shop, context: NSManagedObjectContext) {
-            shop.setValue(info.creation_tsz, forKey: "creation_tsz")
-            shop.setValue(Int16(info.digital_listing_count), forKey: "digital_listing_count")
-            shop.setValue(info.digital_sale_message, forKey: "digital_sale_message")
-            shop.setValue(info.icon_url_fullxfull, forKey: "icon_url_fullxfull")
-            shop.setValue(info.last_modified_tsz, forKey: "last_modified_tsz")
-            shop.setValue(Int16(info.listing_active_count), forKey: "listing_active_count")
-            shop.setValue(Int16(info.listing_inactive_count), forKey: "listing_inactive_count")
-            shop.setValue(Int16(info.listing_sold_count), forKey: "listing_sold_count")
-            shop.setValue(info.sale_message, forKey: "sale_message")
-            shop.setValue(info.shop_name, forKey: "shop_name")
-            shop.setValue(false, forKey: "is_listing_sold_count_updated")
+        shop.setValue(info.creation_tsz, forKey: "creation_tsz")
+        shop.setValue(Int16(info.digital_listing_count), forKey: "digital_listing_count")
+        shop.setValue(info.digital_sale_message, forKey: "digital_sale_message")
+        shop.setValue(info.icon_url_fullxfull, forKey: "icon_url_fullxfull")
+        shop.setValue(info.last_modified_tsz, forKey: "last_modified_tsz")
+        shop.setValue(Int16(info.listing_active_count), forKey: "listing_active_count")
+        shop.setValue(Int16(info.listing_inactive_count), forKey: "listing_inactive_count")
+        shop.setValue(Int16(info.listing_sold_count), forKey: "listing_sold_count")
+        shop.setValue(info.sale_message, forKey: "sale_message")
+        shop.setValue(info.shop_name, forKey: "shop_name")
+        shop.setValue(false, forKey: "is_listing_sold_count_updated")
         
         shop.withListings.forEach { $0.objectWillChange.send() }
-                   // airport.flightsFrom.forEach { $0.objectWillChange.send() }
-                /*
-                airport.flightsTo.forEach { $0.objectWillChange.send() }
-                airport.flightsFrom.forEach { $0.objectWillChange.send() } */
-                try? context.save()
-            }
+        shop.withListingsHistory.forEach { $0.objectWillChange.send() }
+        //shop.withHistory_?.objectWillChange.send()
+        
+        try? context.save()
+        }
 }

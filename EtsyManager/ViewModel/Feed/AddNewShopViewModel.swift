@@ -9,17 +9,16 @@ import Foundation
 
 class AddNewShopViewModel: ObservableObject {
     
-    var shopId: String = ""
+    var shopId: Int = 0
     var isDigit = true
     //@Published var shopStruct = ShopInfo()
+    var shopName: String = ""
     
     func addNewShop() -> Bool {
-        if let shopIdInt = Int(shopId) {
+       // if let shopIdInt = Int(shopId) {
+        shopId = getShopId(for: shopName)
            // TODO: write down correct return value (if INT wasn't correct shop id)
-                ShopDataManager.shared.loadShopWithId(shopIdInt)
-            return true
-        } else {
-            return false
-        }
+        ShopDataManager.shared.loadShopWithId(shopId)
+        return true
     }
 }

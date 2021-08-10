@@ -21,10 +21,12 @@ struct ShopFeedPage: View {
         VStack {
             TabView(selection: $currentTab,
                     content:  {
-                        //ActiveListingsView(shopInfo: $shopInfo, activeListings: activeListings)
-                        ActiveListingsView(shopInfo: $shopInfo)
-                            .environmentObject(activeListings)
+                        ActiveListingsView(shopInfo: $shopInfo, activeListings: activeListings)
+                      //  ActiveListingsView(shopInfo: $shopInfo, activeListingsInfo: activeListings.activeListingsInfo)
+                        //ActiveListingsView(shopInfo: $shopInfo)
                             .tag(0)
+                          //  .environmentObject(activeListings)
+                            
                         SoldListingsView(shopInfo: $shopInfo)
                             .tag(1)
                     })
@@ -41,19 +43,19 @@ struct ShopFeedPage: View {
                            }
                 }
                 .sheet(isPresented: $showFilters) {
-                 // FilterOptionsView()
                     ActiveListingsFilterView()
                 }
                
                 
         }
         .onAppear() {
-            if updateActiveListingsFor.contains(shopInfo.shop_id!) {
+             if updateActiveListingsFor.contains(shopInfo.shop_id!) {
                 activeListings.getActiveListings(shopId: shopInfo.shop_id!)
                 updateActiveListingsFor.remove(at: updateActiveListingsFor.firstIndex(of: shopInfo.shop_id!)!)
             } else {
                 activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
-            } 
+            }
+          // activeListings.resetAllRecords()
             
         }
      

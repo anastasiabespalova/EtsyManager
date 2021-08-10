@@ -11,7 +11,8 @@ struct ListingView: View {
   //  @ObservedObject var shop: Shop
   //let shop: ShopExample
    // @ObservedObject var shop: Shop
-    @Binding var listingInfo: ListingInfo
+ //   @Binding var listingInfo: ListingInfo
+    @State var listingInfo: ListingInfo
 
   var body: some View {
     VStack {

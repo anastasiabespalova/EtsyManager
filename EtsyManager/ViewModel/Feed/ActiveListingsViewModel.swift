@@ -10,7 +10,11 @@ import CoreData
 
 class ActiveListingsViewModel: ObservableObject {
 
-    @Published var activeListingsInfo: [ListingInfo] = []
+    @Published var activeListingsInfo: [ListingInfo] = [] /*{
+        willSet {
+            objectWillChange.send()
+        }
+    } */
     var shopIds: [Int] = []
   //  @Published var totalActiveListingsInfo: [[ListingInfo]] = [[]]
     

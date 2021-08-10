@@ -20,6 +20,36 @@ class ShopDataManager {
         return persistentContainer.viewContext
     }
     
+    private lazy var historyRequestQueue = DispatchQueue(label: "history")
+    
+    private var lastHistoryToken: NSPersistentHistoryToken?
+    
+    private lazy var tokenFileURL: URL = {
+      let url = NSPersistentContainer.defaultDirectoryURL()
+        .appendingPathComponent("FireballWatch", isDirectory: true)
+      do {
+        try FileManager.default
+          .createDirectory(
+            at: url,
+            withIntermediateDirectories: true,
+            attributes: nil)
+      } catch {
+        // log any errors
+      }
+      return url.appendingPathComponent("token.data", isDirectory: false)
+    }()
+    
+    private func storeHistoryToken(_ token: NSPersistentHistoryToken) {
+      do {
+        let data = try NSKeyedArchiver
+          .archivedData(withRootObject: token, requiringSecureCoding: true)
+        try data.write(to: tokenFileURL)
+        lastHistoryToken = token
+      } catch {
+        // log any errors
+      }
+    }
+    
     private init() {
         persistentContainer = NSPersistentContainer(name: "EtsyManager")
         persistentContainer.loadPersistentStores { (description, error) in
@@ -27,6 +57,74 @@ class ShopDataManager {
                 fatalError("Unable to initialize Core Data Stack \(error)")
             }
         }
+        
+        let persistentStoreDescription = persistentContainer.persistentStoreDescriptions.first
+        
+        persistentStoreDescription?.setOption(
+          true as NSNumber,
+          forKey: NSPersistentHistoryTrackingKey)
+        
+        loadHistoryToken()
+        print(lastHistoryToken ?? "no history")
+    }
+    
+    private func loadHistoryToken() {
+      do {
+        let tokenData = try Data(contentsOf: tokenFileURL)
+        lastHistoryToken = try NSKeyedUnarchiver
+          .unarchivedObject(ofClass: NSPersistentHistoryToken.self, from: tokenData)
+      } catch {
+        // log any errors
+      }
+    }
+    
+    private func mergeChanges(from transactions: [NSPersistentHistoryTransaction]) {
+       let context = viewContext
+       context.perform {
+         transactions.forEach { transaction in
+           guard let userInfo = transaction.objectIDNotification().userInfo else {
+             return
+           }
+
+           NSManagedObjectContext
+             .mergeChanges(fromRemoteContextSave: userInfo, into: [context])
+         }
+       }
+     }
+    
+    func processRemoteStoreChange(_ notification: Notification) {
+       historyRequestQueue.async {
+         let backgroundContext = self.persistentContainer.newBackgroundContext()
+         backgroundContext.performAndWait {
+           let request = NSPersistentHistoryChangeRequest
+             .fetchHistory(after: self.lastHistoryToken)
+
+           if let historyFetchRequest = NSPersistentHistoryTransaction.fetchRequest {
+            // historyFetchRequest.predicate =
+            //   NSPredicate(format: "%K != %@", "author", PersistenceController.authorName)
+             request.fetchRequest = historyFetchRequest
+           }
+
+           do {
+             let result = try backgroundContext.execute(request) as? NSPersistentHistoryResult
+             guard
+               let transactions = result?.result as? [NSPersistentHistoryTransaction],
+               !transactions.isEmpty
+             else {
+               return
+             }
+             // Update the viewContext with the changes
+             self.mergeChanges(from: transactions)
+
+             if let newToken = transactions.last?.token {
+             // Update the history token using the last transaction.
+               self.storeHistoryToken(newToken)
+             }
+           } catch {
+            _ = error as NSError
+           }
+         }
+       }
     }
     
     func save() {
@@ -77,6 +175,7 @@ class ShopDataManager {
     // TODO: get item with earliest date
     func getActiveListingsForShop(id: Int) -> [Listing] {
         
+        // load from api
         loadAllActiveListings(id: id)
         
         let associatedShop = Shop.withId(id, context: self.viewContext)
@@ -88,6 +187,11 @@ class ShopDataManager {
         } catch {
             return []
         }
+    }
+    
+    // TODO: refresh old versions of listings
+    func refreshListingsByDate() {
+        
     }
     
     
