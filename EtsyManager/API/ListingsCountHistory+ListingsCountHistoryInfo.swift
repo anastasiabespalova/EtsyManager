@@ -17,47 +17,56 @@ extension ListingsCountHistory {
     
     static func fetchRequest(_ predicate: NSPredicate) -> NSFetchRequest<ListingsCountHistory> {
             let request = NSFetchRequest<ListingsCountHistory>(entityName: "ListingsCountHistory")
-           //request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+            request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
             request.predicate = predicate
             return request
-        }
+    }
     
-    static func withId(_ id: Int, context: NSManagedObjectContext) -> ListingsCountHistory {
+    static func update(shop_id: Int, context: NSManagedObjectContext)  {
         
-        let request = fetchRequest(NSPredicate(format: "shop_id = %@", NSNumber(value: id)))
-        let shopHistoryResults = (try? context.fetch(request)) ?? []
-        if let shopHistory = shopHistoryResults.first {
-                // if found, return it
-            return shopHistory
-        } else {
-            let shopHistory = ShopHistory(context: context)
-            shopHistory.shop_id = Int64(id)
-            do {
-                let shopHistoryInfo = ShopHistoryInfo(id: id, isChecked: false)
-                self.update(from: shopHistoryInfo, context: context)
-                return shopHistory
-            }
-        }
-    }
+        let shop = Shop.withId(Int(shop_id), context: context)
+        if hasSomethingChanged(shop: shop, context: context) {
+            print("Updated history for shop: \(shop.shop_name ?? "")")
+            
+            let listingsCountHistoryInfo = ListingsCountHistoryInfo(shop: shop)
+            let listingsCountHistory = ListingsCountHistory(context:context)
+            listingsCountHistory.activeListingsCount = listingsCountHistoryInfo.activeListingsCount
+            listingsCountHistory.inactiveListingsCount = listingsCountHistoryInfo.inactiveListingsCount
+            listingsCountHistory.soldListingsCount = listingsCountHistoryInfo.soldListingsCount
+            listingsCountHistory.timestamp = listingsCountHistoryInfo.timestamp
+            listingsCountHistory.forShop = shop
+            listingsCountHistory.shop_id = shop.shop_id
 
-    static func update(from info: ListingsCountHistoryInfo, context: NSManagedObjectContext) {
-        let listingsCountHistory = self.withId(info.id, context: context)
-        listingsCountHistory.shop_id = Int64(info.shop_id)
-            
-            shopHistory.listingsCountHistory.forEach { $0.objectWillChange.send() }
-            
-            shopHistory.forShop = Shop.withId(info.shop_id!, context: context)
-                try? context.save()
-            }
+            listingsCountHistory.objectWillChange.send()
+            try? context.save()
+        } else {
+            print("Didn't update history for shop: \(shop.shop_name ?? "") ")
+        }
+       
+        
     }
     
-
+    static func hasSomethingChanged(shop: Shop, context: NSManagedObjectContext) -> Bool {
+        let request = fetchRequest(NSPredicate(format: "shop_id = %@", NSNumber(value: shop.shop_id)))
+        let listingsCountHistories = (try? context.fetch(request)) ?? []
+        if let lastListingCountHistory = listingsCountHistories.first {
+            if lastListingCountHistory.inactiveListingsCount == shop.listing_inactive_count,
+               lastListingCountHistory.activeListingsCount == shop.listing_active_count,
+               lastListingCountHistory.soldListingsCount == shop.listing_sold_count {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
+    }
     
 }
 
 
-struct ListingsCountHistoryInfo: Codable, Hashable, Identifiable, Comparable {
-    var id: Int { Int(timestamp) }
+struct ListingsCountHistoryInfo: Codable, Hashable, Comparable {
+   // var id: Int { shop_id }
     
     static func < (lhs: ListingsCountHistoryInfo, rhs: ListingsCountHistoryInfo) -> Bool {
         lhs.shop_id < rhs.shop_id
@@ -76,6 +85,14 @@ struct ListingsCountHistoryInfo: Codable, Hashable, Identifiable, Comparable {
         activeListingsCount = 0
         timestamp = Date()
     }
+    
+    init(history: ListingsCountHistory) {
+        self.timestamp = history.timestamp!
+        self.shop_id = history.shop_id
+        self.soldListingsCount = history.soldListingsCount
+        self.activeListingsCount = history.activeListingsCount
+        self.inactiveListingsCount = history.inactiveListingsCount
+    }
 
     
     init(shop: Shop) {
@@ -84,6 +101,14 @@ struct ListingsCountHistoryInfo: Codable, Hashable, Identifiable, Comparable {
         self.soldListingsCount = shop.listing_sold_count
         self.activeListingsCount = shop.listing_active_count
         self.inactiveListingsCount = shop.listing_inactive_count
+    }
+    
+    init(shopInfo: ShopInfo) {
+        self.timestamp = Date()
+        self.shop_id = Int64(shopInfo.shop_id!)
+        self.soldListingsCount = Int16(shopInfo.listing_sold_count)
+        self.activeListingsCount = Int16(shopInfo.listing_active_count)
+        self.inactiveListingsCount = Int16(shopInfo.listing_inactive_count)
     }
     
     

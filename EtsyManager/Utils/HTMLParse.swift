@@ -19,6 +19,7 @@ func getNumberOfSales(for shopName: String) -> Int {
     if let numberOfSalesInString = try! document.getElementsByClass("wt-text-caption wt-no-wrap").first()?.text() {
         numberOfSales = Int(numberOfSalesInString.split(separator: " ")[0])!
         print(numberOfSales)
+       
         return numberOfSales
     }
    
@@ -49,3 +50,5 @@ func getShopId(for shopName: String) -> Int {
    
     return Int(stringShopId)!
 }
+
+

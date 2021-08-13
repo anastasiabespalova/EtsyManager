@@ -78,7 +78,7 @@ struct FilterOptionsView: View {
 
   // button moved from here into below background view !!
 
-}.background(ActiveListingsBottomView(presentation: presentationMode) {
+}.background(BottomView(presentation: presentationMode) {
  Button {
      presentationMode.wrappedValue.dismiss()
      UserDefaults.standard.set(true, forKey: "LaunchedBefore")
@@ -97,7 +97,7 @@ struct FilterOptionsView: View {
 }
 }
 
-
+/*
 
 struct ActiveListingsBottomView<Content: View>: UIViewRepresentable {
     @Binding var presentationMode: PresentationMode
@@ -160,3 +160,4 @@ struct ActiveListingsBottomView<Content: View>: UIViewRepresentable {
         }
     }
 }
+*/

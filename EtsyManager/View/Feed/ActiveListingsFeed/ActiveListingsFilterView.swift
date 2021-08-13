@@ -99,7 +99,7 @@ struct ActiveListingsFilterView: View {
 }
 
 
-
+/*
 struct BottomView<Content: View>: UIViewRepresentable {
     @Binding var presentationMode: PresentationMode
     private var content: () -> Content
@@ -161,3 +161,4 @@ struct BottomView<Content: View>: UIViewRepresentable {
         }
     }
 }
+*/

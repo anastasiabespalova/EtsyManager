@@ -34,9 +34,16 @@ extension Listing: Comparable {
             etsy.getAllActiveListings(for: id, offset: offset) { (inner: () throws -> [ListingInfo]?) -> Void in
                 do {
                     listingInfoArray = try inner()!
+                    //TODO: think how to deal with offset when sold listings tracking
+                   /* currentActiveListingsIDs?.forEach{ listing in
+                        if !listingInfoArray.contains(where: { $0.listing_id == listing.listing_id }) {
+                            self.makeListingInactive(id: Int(listing.listing_id), context: context)
+                        }
+                    } */
                     listingInfoArray.indices.forEach { idx in
                         listingInfoArray[idx].shop_id = id
                     }
+                    
                     listingInfoArray.forEach { listingInfo in
                         let request = fetchRequest(NSPredicate(format: "listing_id = %@", NSNumber(value: listingInfo.listing_id)))
                         let listings = (try? privateMOC.fetch(request)) ?? []
@@ -46,6 +53,12 @@ extension Listing: Comparable {
                             let listing = Listing(context: privateMOC)
                             listing.listing_id = Int64(listingInfo.listing_id)
                             self.update(from: listingInfo, context: context, privateContext: privateMOC)
+                           // print("before withID")
+                            for image in listingInfo.images {
+                               // print("withID")
+                                _ = ListingImageURLs.withId(image.listing_image_id, listingImageURLsInfo: image, context: context)
+                            }
+                           
                         }
                     }
                 } catch let error {
@@ -96,6 +109,18 @@ extension Listing: Comparable {
             set { fromShop_ = newValue }
         }
     
+    var withPhotos: Set<ListingImageURLs> {
+            get { (withPhotos_ as? Set<ListingImageURLs>) ?? [] }
+            set { withPhotos_ = newValue as NSSet }
+        }
+    
+    static func makeListingInactive(id: Int, context: NSManagedObjectContext) {
+        let listing = self.withId(id, context: context)
+        listing.state = "sold"
+        try? context.save()
+       // print("Made Listing sold: \(id)")
+    }
+    
     static func update(from info: ListingInfo, context: NSManagedObjectContext, privateContext: NSManagedObjectContext) {
        // if let id = info.listing_id {
        //let id = info.shop_id!
@@ -120,6 +145,8 @@ extension Listing: Comparable {
         listing.views = Int16(info.views)
         //listing.fromShop = Shop.withId(info.shop_id, context: context)
         listing.fromShop = Shop.withId(info.shop_id, context: privateContext)
+        
+      //  listing.withPhotos = info.images
         
         let date = Date()
         listing.setValue(date.format(), forKey: "updated_at")

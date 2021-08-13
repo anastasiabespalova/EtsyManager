@@ -13,11 +13,12 @@ struct ShopView: View {
   //let shop: ShopExample
    // @ObservedObject var shop: Shop
     @Binding var shopInfo: ShopInfo
+    @Binding var listingsCountHistoryInfo: ListingsCountHistoryInfo
 
   var body: some View {
     HStack(alignment: .top, spacing: 0) {
         Spacer()
-        ShopIcon(width: 40, height: 40, radius: 6)
+        ShopIcon(width: 40, height: 40, radius: 6, shopIconURL: $shopInfo.icon_url_fullxfull)
         Spacer()
         VStack(alignment: .leading, spacing: 6) {
             
@@ -30,9 +31,10 @@ struct ShopView: View {
                    // .foregroundColor(Color(UIColor.label))
                 
                 HStack {
-                Text("Active listings: " + String(shopInfo.listing_active_count) + "  ")
+                    Text("Active listings:  \(shopInfo.listing_active_count) (\(Int(shopInfo.listing_active_count) - Int(listingsCountHistoryInfo.activeListingsCount)))" )
                 if shopInfo.is_listing_sold_count_updated {
-                        Text("Sales: " + String(shopInfo.listing_sold_count) + "  ")
+                    //Text("Sales: " + String(shopInfo.listing_sold_count) + "  (" + String(Int(shopInfo.listing_sold_count) - Int(listingsCountHistoryInfo.soldListingsCount)) + ")")
+                    Text("Sales:  \(shopInfo.listing_sold_count) (\(Int(shopInfo.listing_sold_count) - Int(listingsCountHistoryInfo.soldListingsCount)))" )
                 } else {
                     HStack {
                         Text("Sales: ")

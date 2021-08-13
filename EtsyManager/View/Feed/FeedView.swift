@@ -33,7 +33,7 @@ struct FeedView: View {
                         EmptyView()
                     }
                     .opacity(0)
-                    ShopView(shopInfo: $shopList.shopsInfo[idx])
+                    ShopView(shopInfo: $shopList.shopsInfo[idx], listingsCountHistoryInfo: $shopList.listingsCountHistory[idx])
                 }
                 .frame(
                   maxWidth: .infinity,
@@ -63,7 +63,8 @@ struct FeedView: View {
             FilterOptionsView()
           }
         .sheet(isPresented: $addNewShop) {
-              AddNewShopView(isPresented: self.$addNewShop,
+             // AddNewShopView(isPresented: self.$addNewShop,
+            AddNewShopView(
                              updateActiveListingsFor: $shopList.updateActiveListingsFor)
                 .onDisappear() {
                     shopList.updateShopsAfterNew()

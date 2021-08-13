@@ -30,9 +30,9 @@ struct ListingInfo: Codable, Identifiable, Comparable {
     var tags: String
     var title: String
     var views: Int
-    
     var shop_id: Int
    
+    var images: [ListingImageURLsInfo]
     
     static func < (lhs: ListingInfo, rhs: ListingInfo) -> Bool {
         lhs.last_modified_tsz < rhs.last_modified_tsz
@@ -56,9 +56,12 @@ struct ListingInfo: Codable, Identifiable, Comparable {
         title = ""
         views = 0
         shop_id = 0
+        images = []
     }
     
     init(listing: Listing) {
+       // print("init")
+        
         self.listing_id = Int(listing.listing_id)
         self.creation_tsz = listing.creation_tsz
         self.is_digital = listing.is_digital
@@ -76,6 +79,19 @@ struct ListingInfo: Codable, Identifiable, Comparable {
         self.title = listing.title ?? ""
         self.views = Int(listing.views)
         self.shop_id = Int(listing.fromShop.shop_id)
+        
+        self.images = []
+        let images = ShopDataManager.shared.getListingImages(id: listing_id)
+        for image in images {
+            self.images.append(ListingImageURLsInfo(listingImageURLs: image))
+            //print("appended image with id \(image.listing_image_id)")
+        }
+        
+        
+      /*  for image in listing.withPhotos {
+            self.images.append(ListingImageURLsInfo(listingImageURLs: image))
+            print("appended image with id \(image.listing_image_id)")
+        }*/
     }
     
     

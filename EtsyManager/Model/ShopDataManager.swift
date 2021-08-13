@@ -147,6 +147,20 @@ class ShopDataManager {
         }
     }
     
+    func getListingsCountHistory(for shop_id: Int) -> ListingsCountHistory {
+        let request: NSFetchRequest<ListingsCountHistory> = ListingsCountHistory.fetchRequest(NSPredicate(format: "shop_id = %@", NSNumber(value: shop_id)))
+        if let listingCountHistory = try! viewContext.fetch(request).first {
+            return listingCountHistory
+        } else {
+            return ListingsCountHistory()
+        }
+    }
+    
+    func getAllListingsCountHistoryForShop(for shop_id: Int) -> [ListingsCountHistory] {
+        let request: NSFetchRequest<ListingsCountHistory> = ListingsCountHistory.fetchRequest(NSPredicate(format: "shop_id = %@", NSNumber(value: shop_id)))
+        return try! viewContext.fetch(request)
+    }
+    
     func getAllActiveListings(id: Int) -> [Listing] {
         loadAllActiveListings(id: id)
         let request: NSFetchRequest<Listing> = Listing.fetchRequest()
@@ -157,8 +171,34 @@ class ShopDataManager {
         }
     }
     
+    func getAllInactiveListingsForShop(id: Int) -> [Listing] {
+        let associatedShop = Shop.withId(id, context: self.viewContext)
+        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@ AND ( state = %@ OR state = %@ )", argumentArray: [associatedShop, "inactive", "sold"]))
+        //request.propertiesToGroupBy = [ "listing_id" ]
+        request.sortDescriptors = [ NSSortDescriptor(key: "updated_at", ascending: false) ]
+        do {
+            return try viewContext.fetch(request)
+               
+          } catch {
+              return []
+          }
+    }
     
-    // TODO: get item with earliest date
+    func getListingImages(id: Int) -> [ListingImageURLs] {
+       // let associatedListing = Listing.withId(id, context: self.viewContext)
+       // let request: NSFetchRequest<ListingImageURLs> = ListingImageURLs.fetchRequest(NSPredicate(format: "forListing_ = %@", argumentArray: [associatedListing]))
+        let request: NSFetchRequest<ListingImageURLs> = ListingImageURLs.fetchRequest(NSPredicate(format: "listing_id = %@", argumentArray: [id]))
+        //request.propertiesToGroupBy = [ "listing_id" ]
+        request.sortDescriptors = [ NSSortDescriptor(key: "rank", ascending: true) ]
+        do {
+            return try viewContext.fetch(request)
+               
+          } catch {
+              return []
+          }
+    }
+    
+    
     func loadActiveListingsForShop(id: Int) -> [Listing] {
         let associatedShop = Shop.withId(id, context: self.viewContext)
         let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
@@ -172,14 +212,13 @@ class ShopDataManager {
           }
     }
     
-    // TODO: get item with earliest date
     func getActiveListingsForShop(id: Int) -> [Listing] {
         
         // load from api
         loadAllActiveListings(id: id)
         
         let associatedShop = Shop.withId(id, context: self.viewContext)
-        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@", argumentArray: [associatedShop]))
+        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@ AND state = %@", argumentArray: [associatedShop, "active"]))
         
         do {
             let listings = try viewContext.fetch(request)
@@ -254,16 +293,28 @@ class ShopDataManager {
             save()
     }
     
+    
+    
     // for shop with shop_id = id
     func loadAllActiveListings(id: Int) {
 //        DispatchQueue.global(qos: .default).async {
 //            _ = Listing.loadAllActive(id, context: self.viewContext)
 //            self.save()
 //        }
+        
+        let associatedShop = Shop.withId(id, context: viewContext)
+        let request: NSFetchRequest<Listing> = Listing.fetchRequest(NSPredicate(format: "fromShop_ = %@ AND state = %@", argumentArray: [associatedShop, "active"]))
+        request.propertiesToFetch = ["listing_id"]
+        let currentActiveListingsIDs = try? viewContext.fetch(request)
+        currentActiveListingsIDs?.forEach{ listing in
+            Listing.makeListingInactive(id: Int(listing.listing_id), context: viewContext)
+             }
+        
         let activeListingsNumber = Shop.withId(id, context: viewContext).listing_active_count
         var offset = 0
         while offset < activeListingsNumber {
             _ = Listing.loadAllActive(id, offset: offset, context: viewContext)
+            //_ = Listing.getAllActiveListingsPhotos(id, offset: offset, context: viewContext)
             save()
             offset += 100
         }
@@ -304,5 +355,7 @@ class ShopDataManager {
                 print ("There was an error")
             }
         }
+    
+    // MARK: -Images
     
 }

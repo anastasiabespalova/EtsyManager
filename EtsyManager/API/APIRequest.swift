@@ -15,7 +15,7 @@ import CoreData
 class EtsyAPI {
     
     static var shared = EtsyAPI()
-    
+   
   
     let limit = 100
 
@@ -56,16 +56,15 @@ class EtsyAPI {
         
     }
     
-    
-    func getAllActiveListings(for shopId: Int, offset: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
+  /*  func getAllActiveListingsPhotos(for shopId: Int, offset: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
         let queue = DispatchQueue(label: "com.test.api", qos: .default)
         let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
-        AF.request(requestString + apiKey + "&limit=\(limit)" + "&offset=\(offset)").validate().responseJSON(queue: queue) { response in
+        AF.request(requestString + apiKey + "&limit=\(limit)" + "&offset=\(offset)" + "&includes=Images").validate().responseJSON(queue: queue) { response in
             switch response.result {
             case .success:
-                
                 let json = JSON(response.data!)
                 completionHandler({
+                    // TODO: listingInfoArray -> listingPhotosInfoArray
                     var listingInfoArray: [ListingInfo] = []
                     if json["count"].int != nil {
                         let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
@@ -96,6 +95,72 @@ class EtsyAPI {
                             
                             listingInfo.title = json["results"][index]["title"].stringValue
                             listingInfo.views = json["results"][index]["views"].intValue
+                            listingInfoArray.append(listingInfo)
+                        }
+                    }
+                    return listingInfoArray
+                    
+                })
+            case .failure(let error):
+                print(error.localizedDescription)
+                completionHandler({ throw error })
+            }
+        }
+        
+    }
+    */
+    
+    func getAllActiveListings(for shopId: Int, offset: Int, completionHandler: @escaping (_ inner: () throws -> [ListingInfo]?) -> ()) {
+        let queue = DispatchQueue(label: "com.test.api", qos: .default)
+        let requestString = "https://openapi.etsy.com/v2/shops/\(shopId)/listings/active"
+        AF.request(requestString + apiKey + "&limit=\(limit)" + "&offset=\(offset)" + "&includes=Images").validate().responseJSON(queue: queue) { response in
+            switch response.result {
+            case .success:
+                
+                let json = JSON(response.data!)
+                completionHandler({
+                    var listingInfoArray: [ListingInfo] = []
+                    if json["count"].int != nil {
+                        let numberOfActiveListings = (json["count"].int != nil) ? json["count"].int! : 0
+                        let numOfListingsInRequest = (numberOfActiveListings > (self.limit + offset)) ? self.limit : (numberOfActiveListings - offset)
+                        for index in 0..<numOfListingsInRequest {
+                            // TODO: actually write down parsing
+                            var listingInfo = ListingInfo()
+                            listingInfo.creation_tsz = json["results"][index]["creation_tsz"].floatValue
+                            listingInfo.is_digital = json["results"][index]["is_digital"].boolValue
+                            listingInfo.is_private = json["results"][index]["is_private"].boolValue
+                            listingInfo.item_dimensions_unit = json["results"][index]["is_private"].stringValue
+                            listingInfo.item_height = json["results"][index]["item_height"].intValue
+                            listingInfo.item_width = json["results"][index]["item_width"].intValue
+                            listingInfo.last_modified_tsz = json["results"][index]["last_modified_tsz"].floatValue
+                            listingInfo.listing_description = json["results"][index]["description"].stringValue
+                            listingInfo.listing_id = json["results"][index]["listing_id"].intValue
+                            listingInfo.num_favorers = json["results"][index]["num_favorers"].intValue
+                            listingInfo.price = json["results"][index]["price"].stringValue
+                            listingInfo.quantity = json["results"][index]["quantity"].intValue
+                            listingInfo.state = json["results"][index]["state"].stringValue
+                        
+                            var res = ""
+                            for tag in json["results"][index]["tags"] {
+                                res = res + tag.1.stringValue + "; "
+                            }
+                            listingInfo.tags = res
+                            
+                            listingInfo.title = json["results"][index]["title"].stringValue
+                            listingInfo.views = json["results"][index]["views"].intValue
+                            
+                            
+                            for image in json["results"][index]["Images"] {
+                                var listingImageURLsInfo = ListingImageURLsInfo()
+                                listingImageURLsInfo.listing_id = listingInfo.listing_id
+                                listingImageURLsInfo.rank = image.1["rank"].intValue
+                                listingImageURLsInfo.url_570xN = image.1["url_570xN"].stringValue
+                                listingImageURLsInfo.listing_image_id = image.1["listing_image_id"].intValue
+                               // print("got the image with url \(listingImageURLsInfo.url_570xN )")
+                                listingInfo.images.append(listingImageURLsInfo)
+                            }
+                            
+                            
                             listingInfoArray.append(listingInfo)
                         }
                     }

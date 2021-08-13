@@ -18,7 +18,7 @@ struct ListingView: View {
     VStack {
         HStack(alignment: .top, spacing: 0) {
             Spacer()
-            ListingIcon(width: 120, height: 90, radius: 6)
+            ListingIcon(width: 120, height: 90, radius: 6, listingImages: $listingInfo.images)
             Spacer()
             VStack(alignment: .leading, spacing: 6) {
                 //Text(shop.name)

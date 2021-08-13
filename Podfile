@@ -10,4 +10,5 @@ target 'EtsyManager' do
   pod 'AlamofireImage'
   pod 'SwiftyJSON'
   pod 'SwiftSoup'
+  pod 'Kingfisher', '~> 7.0'
 end

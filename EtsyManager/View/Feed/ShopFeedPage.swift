@@ -16,6 +16,7 @@ struct ShopFeedPage: View {
     @Binding var updateActiveListingsFor: [Int]
     
     @ObservedObject var activeListings: ActiveListingsViewModel = ActiveListingsViewModel()
+    @ObservedObject var soldListings: SoldListingsViewModel = SoldListingsViewModel()
     
     var body: some View {
         VStack {
@@ -27,8 +28,11 @@ struct ShopFeedPage: View {
                             .tag(0)
                           //  .environmentObject(activeListings)
                             
-                        SoldListingsView(shopInfo: $shopInfo)
+                        SoldListingsView(shopInfo: $shopInfo, soldListings: soldListings)
                             .tag(1)
+                        
+                        ShopStatisticsView(shopInfo: $shopInfo)
+                            .tag(2)
                     })
                 
                 .tabViewStyle(PageTabViewStyle())
@@ -49,13 +53,14 @@ struct ShopFeedPage: View {
                 
         }
         .onAppear() {
-             if updateActiveListingsFor.contains(shopInfo.shop_id!) {
+            if updateActiveListingsFor.contains(shopInfo.shop_id!) {
                 activeListings.getActiveListings(shopId: shopInfo.shop_id!)
                 updateActiveListingsFor.remove(at: updateActiveListingsFor.firstIndex(of: shopInfo.shop_id!)!)
             } else {
                 activeListings.loadActiveListings(shopId: shopInfo.shop_id!)
             }
-          // activeListings.resetAllRecords()
+            soldListings.getSoldListings(shopId: shopInfo.shop_id!)
+         //  activeListings.resetAllRecords()
             
         }
      

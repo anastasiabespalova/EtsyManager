@@ -23,10 +23,16 @@ extension Shop {
             let shops = (try? context.fetch(request)) ?? []
             if let shop = shops.first {
                 do {
-                    let listing_sold_count = getNumberOfSales(for: shop.shop_name!)
-                    shop.setValue(Int16(listing_sold_count), forKey: "listing_sold_count")
-                    shop.setValue(true, forKey: "is_listing_sold_count_updated")
-                    try context.save()
+                    if let name = shop.shop_name {
+                        let listing_sold_count = getNumberOfSales(for: name)
+                        shop.setValue(Int16(listing_sold_count), forKey: "listing_sold_count")
+                        shop.setValue(true, forKey: "is_listing_sold_count_updated")
+                        try context.save()
+                        ListingsCountHistory.update(shop_id: id, context: context)
+                    } else {
+                        return nil
+                    }
+                   
                 } catch let error {
                     print(error)
                 }
@@ -46,9 +52,7 @@ extension Shop {
                 etsy.getShopInfo(for: id) { (inner: () throws -> ShopInfo?) -> Void in
                     do {
                         shopInfo = try inner()!
-                        
                        self.updateExistingShop(from: shopInfo, for: shop, context: context)
-                        
                     } catch let error {
                        print(error)
                     }
@@ -78,9 +82,9 @@ extension Shop {
                 etsy.getShopInfo(for: id) { (inner: () throws -> ShopInfo?) -> Void in
                     do {
                         shopInfo = try inner()!
-                      //  shopInfo.listing_sold_count = getNumberOfSales(for: shopInfo.shop_name)
                         self.update(from: shopInfo, context: context)
                         _ = self.updateSoldListingCount(id, context: context)
+                        ListingsCountHistory.update(shop_id: id, context: context)
                     } catch let error {
                        print(error)
                     }
@@ -139,8 +143,9 @@ extension Shop {
         shop.setValue(false, forKey: "is_listing_sold_count_updated")
         
         shop.withListings.forEach { $0.objectWillChange.send() }
-        shop.withListingsHistory.forEach { $0.objectWillChange.send() }
-        //shop.withHistory_?.objectWillChange.send()
+        //shop.withListingsHistory.forEach { $0.objectWillChange.send() }
+        
+        print("Shop icon URL: \(info.icon_url_fullxfull)")
         
         try? context.save()
         }
