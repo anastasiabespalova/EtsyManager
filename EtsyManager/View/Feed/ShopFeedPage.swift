@@ -26,10 +26,24 @@ struct ShopFeedPage: View {
                       //  ActiveListingsView(shopInfo: $shopInfo, activeListingsInfo: activeListings.activeListingsInfo)
                         //ActiveListingsView(shopInfo: $shopInfo)
                             .tag(0)
+                            .sheet(isPresented: $showFilters) {
+                                //  ActiveListingsFilterView(activeListings: $activeListings.activeListingsInfo)
+                                  ActiveListingsFilterView(selectedFilter: "Recent Added")
+                                      .onDisappear() {
+                                          activeListings.filterActiveListings()
+                                      }
+                              }
                           //  .environmentObject(activeListings)
                             
                         SoldListingsView(shopInfo: $shopInfo, soldListings: soldListings)
                             .tag(1)
+                            .sheet(isPresented: $showFilters) {
+                                //  ActiveListingsFilterView(activeListings: $activeListings.activeListingsInfo)
+                                  SoldListingsFilterView(selectedFilter: "Recent Added")
+                                      .onDisappear() {
+                                        //  activeListings.filterActiveListings()
+                                      }
+                              }
                         
                         ShopStatisticsView(shopInfo: $shopInfo)
                             .tag(2)
@@ -46,10 +60,14 @@ struct ShopFeedPage: View {
                         }
                            }
                 }
-                .sheet(isPresented: $showFilters) {
-                    ActiveListingsFilterView()
+              /* .sheet(isPresented: $showFilters) {
+                  //  ActiveListingsFilterView(activeListings: $activeListings.activeListingsInfo)
+                    ActiveListingsFilterView(selectedFilter: "Recent Added")
+                        .onDisappear() {
+                            activeListings.filterActiveListings()
+                        }
                 }
-               
+               */
                 
         }
         .onAppear() {

@@ -1,13 +1,13 @@
 //
-//  ActiveListingsFilterView.swift
+//  SoldListingsFilterView.swift
 //  EtsyManager
 //
-//  Created by Анастасия Беспалова on 06.08.2021.
+//  Created by Анастасия Беспалова on 14.08.2021.
 //
 
 import SwiftUI
 
-struct ActiveListingsFilterView: View {
+struct SoldListingsFilterView: View {
     @State private var animationAmount: CGFloat = 1
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.verticalSizeClass) var sizeClass
@@ -22,23 +22,13 @@ struct ActiveListingsFilterView: View {
     
     @State var selectedFilter: String
     
-    //@State var activeListings: ActiveListingsViewModel
-    /*
-    var values:[CGFloat] {
-        let temp = [CGFloat]()
-        for listing in activeListings {
-            temp.append(CGFloat(Double(listing.price)))
-        }
-        return temp
-        
-    }
-    */
+
     var body: some View {
         VStack {
             VStack {
                 Spacer()
                 HStack {
-                    Text("Filters for active listings")
+                    Text("Filters for sold listings")
                         .fontWeight(.heavy)
                        // .font(.title)
                     Button("Discharge") {
@@ -60,11 +50,8 @@ struct ActiveListingsFilterView: View {
                            Text("Sort by")
                                .font(Font.headline)
                         Spacer()
-                           RadioButtonGroups { selected in
+                           SoldListingsRadioButtonGroups { selected in
                             selectedFilter = selected
-                           // UserDefaults.standard.set(selected, forKey: "ActiveListingsFilter")
-                            
-                               //print("Selected Gender is: \(selected)")
                            }
                     Spacer()
                 }//HStack 1
@@ -98,7 +85,7 @@ struct ActiveListingsFilterView: View {
              Button {
                  presentationMode.wrappedValue.dismiss()
                  UserDefaults.standard.set(true, forKey: "LaunchedBefore")
-                 UserDefaults.standard.set(selectedFilter, forKey: "ActiveListingsFilter")
+                 UserDefaults.standard.set(selectedFilter, forKey: "SoldListingsFilter")
              } label: {
                  Text("Apply")
                      .fontWeight(.medium)
@@ -116,7 +103,7 @@ struct ActiveListingsFilterView: View {
 }
 
 
-enum SortBy: String {
+enum SoldListingsSortBy: String {
     case recent = "Recent Added"
     case highestPrice = "Highest Price"
     case lowestPrice = "Lowest Price"
@@ -124,11 +111,11 @@ enum SortBy: String {
     case mostView = "Most Views"
 }
 
-struct RadioButtonGroups: View {
+struct SoldListingsRadioButtonGroups: View {
     let callback: (String) -> ()
     
   //  @State var selectedId: String = ""
-    @State var selectedId = UserDefaults.standard.string(forKey: "ActiveListingsFilter")
+    @State var selectedId = UserDefaults.standard.string(forKey: "SoldListingsFilter")
     
     var body: some View {
         VStack {
@@ -142,45 +129,45 @@ struct RadioButtonGroups: View {
     
     var radioRecentMajority: some View {
         RadioButtonField(
-            id: SortBy.recent.rawValue,
-            label: SortBy.recent.rawValue,
-            isMarked: selectedId == SortBy.recent.rawValue ? true : false,
+            id: SoldListingsSortBy.recent.rawValue,
+            label: SoldListingsSortBy.recent.rawValue,
+            isMarked: selectedId == SoldListingsSortBy.recent.rawValue ? true : false,
             callback: radioGroupCallback
         )
     }
     
     var radioHighestPriceMajority: some View {
         RadioButtonField(
-            id: SortBy.highestPrice.rawValue,
-            label: SortBy.highestPrice.rawValue,
-            isMarked: selectedId == SortBy.highestPrice.rawValue ? true : false,
+            id: SoldListingsSortBy.highestPrice.rawValue,
+            label: SoldListingsSortBy.highestPrice.rawValue,
+            isMarked: selectedId == SoldListingsSortBy.highestPrice.rawValue ? true : false,
             callback: radioGroupCallback
         )
     }
     
     var radioLowestPriceMajority: some View {
         RadioButtonField(
-            id: SortBy.lowestPrice.rawValue,
-            label: SortBy.lowestPrice.rawValue,
-            isMarked: selectedId == SortBy.lowestPrice.rawValue ? true : false,
+            id: SoldListingsSortBy.lowestPrice.rawValue,
+            label: SoldListingsSortBy.lowestPrice.rawValue,
+            isMarked: selectedId == SoldListingsSortBy.lowestPrice.rawValue ? true : false,
             callback: radioGroupCallback
         )
     }
     
     var radioMostFavorersMajority: some View {
         RadioButtonField(
-            id: SortBy.mostFavorers.rawValue,
-            label: SortBy.mostFavorers.rawValue,
-            isMarked: selectedId == SortBy.mostFavorers.rawValue ? true : false,
+            id: SoldListingsSortBy.mostFavorers.rawValue,
+            label: SoldListingsSortBy.mostFavorers.rawValue,
+            isMarked: selectedId == SoldListingsSortBy.mostFavorers.rawValue ? true : false,
             callback: radioGroupCallback
         )
     }
     
     var radioMostViewsMajority: some View {
         RadioButtonField(
-            id: SortBy.mostView.rawValue,
-            label: SortBy.mostView.rawValue,
-            isMarked: selectedId == SortBy.mostView.rawValue ? true : false,
+            id: SoldListingsSortBy.mostView.rawValue,
+            label: SoldListingsSortBy.mostView.rawValue,
+            isMarked: selectedId == SoldListingsSortBy.mostView.rawValue ? true : false,
             callback: radioGroupCallback
         )
     }
