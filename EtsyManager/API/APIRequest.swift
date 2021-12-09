@@ -15,7 +15,7 @@ import CoreData
 class EtsyAPI {
     
     static var shared = EtsyAPI()
-    
+    var apiKey = 
   
     let limit = 100
 
